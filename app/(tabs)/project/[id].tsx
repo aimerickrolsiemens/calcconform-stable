@@ -601,7 +601,7 @@ export default function ProjectDetailScreen() {
         {project.buildings.length === 0 ? (
           <Animated.View style={[styles.emptyContainer, { opacity: fadeAnim }]}>
             <Wind size={48} color={theme.colors.textTertiary} />
-            <Text style={styles.emptyTitle}>{strings.noZones}</Text>
+            <Text style={styles.emptyTitle}>Aucun bâtiment</Text>
             <Text style={styles.emptySubtitle}>
               Ajoutez votre premier bâtiment pour commencer l'analyse de conformité.
             </Text>
