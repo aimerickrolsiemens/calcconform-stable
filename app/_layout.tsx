@@ -13,6 +13,7 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { AuthenticationScreen } from '@/components/AuthenticationScreen';
 import { InstallPrompt } from '@/components/InstallPrompt';
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
+import { useDoubleBackToExit } from '@/utils/BackHandler';
 import { Platform, View, Text, StyleSheet } from 'react-native';
 
 // Prévenir l'auto-hide du splash screen de manière sécurisée
