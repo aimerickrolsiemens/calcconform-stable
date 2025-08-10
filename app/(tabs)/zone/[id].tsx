@@ -649,6 +649,15 @@ export default function ZoneDetailScreen() {
           <ComplianceIndicator compliance={compliance} size="small" />
         </View>
 
+        {/* Bouton discret pour accéder au détail */}
+        <TouchableOpacity
+          style={styles.detailButton}
+          onPress={() => handleShutterPress(item)}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.detailButtonText}>Voir le détail du volet</Text>
+        </TouchableOpacity>
+
       </View>
     );
   };
@@ -1529,5 +1538,20 @@ const createStyles = (theme: any) => StyleSheet.create({
     fontSize: 11,
     fontFamily: 'Inter-Medium',
     color: theme.colors.error,
+  },
+  detailButton: {
+    marginTop: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: theme.colors.surfaceSecondary,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    alignItems: 'center',
+  },
+  detailButtonText: {
+    fontSize: 12,
+    fontFamily: 'Inter-Medium',
+    color: theme.colors.primary,
   },
 });
