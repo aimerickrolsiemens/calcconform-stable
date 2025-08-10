@@ -834,7 +834,7 @@ export default function ZoneDetailScreen() {
                 <View style={styles.compactFilterButtonContent}>
                   <View style={[styles.compactFilterDot, { backgroundColor: '#10B981' }]} />
                   <Text style={[styles.compactFilterButtonText, complianceFilter === 'compliant' && styles.compactFilterButtonTextActive]}>
-                    ✓ ({shutterStats.compliant})
+                    Fonctionnel ({shutterStats.compliant})
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -846,7 +846,7 @@ export default function ZoneDetailScreen() {
                 <View style={styles.compactFilterButtonContent}>
                   <View style={[styles.compactFilterDot, { backgroundColor: '#F59E0B' }]} />
                   <Text style={[styles.compactFilterButtonText, complianceFilter === 'acceptable' && styles.compactFilterButtonTextActive]}>
-                    ⚠ ({shutterStats.acceptable})
+                    Acceptable ({shutterStats.acceptable})
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -858,7 +858,7 @@ export default function ZoneDetailScreen() {
                 <View style={styles.compactFilterButtonContent}>
                   <View style={[styles.compactFilterDot, { backgroundColor: '#EF4444' }]} />
                   <Text style={[styles.compactFilterButtonText, complianceFilter === 'non-compliant' && styles.compactFilterButtonTextActive]}>
-                    ✗ ({shutterStats.nonCompliant})
+                    Non conforme ({shutterStats.nonCompliant})
                   </Text>
                 </View>
               </TouchableOpacity>
