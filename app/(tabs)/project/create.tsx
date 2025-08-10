@@ -1103,8 +1103,8 @@ const createStyles = (theme: any) => StyleSheet.create({
     marginBottom: 6,
   },
   referenceFlowInput: {
-    flex: 0,
-    width: 80,
+    flex: 1,
+    minWidth: 120,
     borderWidth: 1,
     borderColor: theme.colors.primary + '40',
     borderRadius: 6,
