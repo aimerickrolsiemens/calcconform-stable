@@ -25,10 +25,7 @@ export default function EditZoneScreen() {
   const [errors, setErrors] = useState<{ name?: string }>({});
 
   // Configure Android back button to go back to the zone screen
-  useAndroidBackButton(() => {
-    handleBack();
-    return true;
-  });
+  useAndroidBackButton();
 
   useEffect(() => {
     loadZone();

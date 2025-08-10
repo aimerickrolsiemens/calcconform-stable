@@ -24,10 +24,7 @@ export default function EditBuildingScreen() {
   const [errors, setErrors] = useState<{ name?: string }>({});
 
   // Configure Android back button to go back to the building screen
-  useAndroidBackButton(() => {
-    handleBack();
-    return true;
-  });
+  useAndroidBackButton();
 
   useEffect(() => {
     loadBuilding();

@@ -38,10 +38,7 @@ export default function ShutterDetailScreen() {
   });
 
   // Configure Android back button to go back to the zone screen or search
-  useAndroidBackButton(() => {
-    handleBack();
-    return true;
-  });
+  useAndroidBackButton();
 
   const loadShutter = useCallback(async () => {
     try {

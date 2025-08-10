@@ -26,10 +26,7 @@ export default function EditProjectScreen() {
   const [errors, setErrors] = useState<{ name?: string; startDate?: string; endDate?: string }>({});
 
   // Configure Android back button to go back to the project screen
-  useAndroidBackButton(() => {
-    handleBack();
-    return true;
-  });
+  useAndroidBackButton();
 
   useEffect(() => {
     loadProject();

@@ -29,10 +29,7 @@ export default function NoteDetailScreen() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Configure Android back button
-  useAndroidBackButton(() => {
-    handleBack();
-    return true;
-  });
+  useAndroidBackButton();
 
   const loadNote = useCallback(async () => {
     try {

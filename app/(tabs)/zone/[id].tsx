@@ -51,10 +51,7 @@ export default function ZoneDetailScreen() {
   }>({});
 
   // Configure Android back button to go back to the building screen
-  useAndroidBackButton(() => {
-    handleBack();
-    return true;
-  });
+  useAndroidBackButton();
 
   const loadZone = useCallback(async () => {
     try {

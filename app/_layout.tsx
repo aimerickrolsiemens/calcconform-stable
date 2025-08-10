@@ -11,6 +11,7 @@ import { ModalProvider } from '@/contexts/ModalContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { AuthenticationScreen } from '@/components/AuthenticationScreen';
 import { InstallPrompt } from '@/components/InstallPrompt';
+import { useDoubleBackToExit } from '@/utils/BackHandler';
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { Platform, View, Text, StyleSheet } from 'react-native';
 
@@ -50,6 +51,10 @@ function ErrorScreen({ error }: { error: string }) {
 // Composant wrapper pour gérer l'authentification
 function AuthenticatedApp() {
   const { isAuthenticated, isLoading } = useAuth();
+  
+  // Activer le double-tap pour quitter sur l'écran d'accueil
+  useDoubleBackToExit();
+  
   const { 
     showInstallButton, 
     showIOSInstructions, 

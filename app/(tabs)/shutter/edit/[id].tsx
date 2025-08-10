@@ -31,10 +31,7 @@ export default function EditShutterScreen() {
   const [errors, setErrors] = useState<{ name?: string; referenceFlow?: string; measuredFlow?: string }>({});
 
   // Configure Android back button to go back to the shutter screen
-  useAndroidBackButton(() => {
-    handleBack();
-    return true;
-  });
+  useAndroidBackButton();
 
   const getShutterPrefix = (shutterType: ShutterType, language: string) => {
     const prefixes = {

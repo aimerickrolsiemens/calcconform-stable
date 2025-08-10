@@ -39,10 +39,7 @@ export default function BuildingDetailScreen() {
 
 
   // Configure Android back button to go back to the project screen
-  useAndroidBackButton(() => {
-    handleBack();
-    return true;
-  });
+  useAndroidBackButton();
 
 
   const loadBuilding = useCallback(async () => {

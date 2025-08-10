@@ -6,29 +6,45 @@ import { router } from 'expo-router';
  * Custom hook to handle Android back button presses
  * Optimisé pour APK Android avec gestion d'erreur robuste
  */
-export function useAndroidBackButton(customAction?: () => boolean) {
+export function useAndroidBackButton(customAction?: () => boolean, forceCustomAction?: boolean) {
   useEffect(() => {
     // Seulement sur Android pour éviter les erreurs sur autres plateformes
     if (Platform.OS !== 'android') return;
 
     const backAction = () => {
       try {
-        // Si il y a une action personnalisée, l'exécuter en premier
+        // Si forceCustomAction est true, toujours exécuter l'action personnalisée
+        if (forceCustomAction && customAction) {
+          return customAction();
+        }
+        
+        // Si il y a une action personnalisée et qu'elle retourne true, l'utiliser
         if (customAction && customAction()) {
           return true;
         }
 
-        // Vérifier si on peut revenir en arrière dans la pile de navigation
+        // Comportement par défaut : utiliser l'historique de navigation d'expo-router
         if (router.canGoBack()) {
+          console.log('📱 Navigation retour via expo-router');
           router.back();
           return true;
         }
 
-        // Si on est sur l'écran d'accueil, laisser le comportement par défaut
+        // Si on est sur l'écran d'accueil, laisser le comportement par défaut (fermer l'app)
+        console.log('📱 Sur l\'écran d\'accueil, fermeture de l\'app');
         return false;
       } catch (error) {
         if (__DEV__) {
           console.warn('Erreur dans useAndroidBackButton:', error);
+        }
+        // En cas d'erreur, essayer quand même de revenir en arrière
+        try {
+          if (router.canGoBack()) {
+            router.back();
+            return true;
+          }
+        } catch (fallbackError) {
+          console.warn('Erreur fallback navigation:', fallbackError);
         }
         return false;
       }
@@ -60,7 +76,7 @@ export function useAndroidBackButton(customAction?: () => boolean) {
         }
       }
     };
-  }, [customAction]);
+  }, [customAction, forceCustomAction]);
 }
 
 /**

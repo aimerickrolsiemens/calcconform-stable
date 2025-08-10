@@ -42,10 +42,7 @@ export default function ProjectDetailScreen() {
 
 
   // Configure Android back button to go back to the home screen
-  useAndroidBackButton(() => {
-    handleBack();
-    return true;
-  });
+  useAndroidBackButton();
 
 
   const loadProject = useCallback(async () => {
