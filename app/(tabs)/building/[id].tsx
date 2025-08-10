@@ -15,7 +15,6 @@ import { useModal } from '@/contexts/ModalContext';
 export default function BuildingDetailScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
-  const navigation = useNavigation();
   const { showModal, hideModal } = useModal();
   const { 
     projects, 
@@ -95,7 +94,7 @@ export default function BuildingDetailScreen() {
       return;
     }
 
-    navigation.navigate(`/(tabs)/zone/${zone.id}`, { id: zone.id }, zone.name);
+    router.push(`/(tabs)/zone/${zone.id}`);
   };
 
   // Fonction pour éditer une zone
