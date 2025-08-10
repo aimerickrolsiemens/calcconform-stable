@@ -10,13 +10,14 @@ import { useStorage } from '@/contexts/StorageContext';
 import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNativeBackHandler } from '@/utils/BackHandler';
+import { useNavigation } from '@/contexts/NavigationContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useModal } from '@/contexts/ModalContext';
 
 export default function ProjectDetailScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const { showModal, hideModal } = useModal();
   const { 
     projects,
@@ -74,18 +75,8 @@ export default function ProjectDetailScreen() {
   }, [loadProject]);
 
   const handleBack = () => {
-    try {
-      // CORRIGÉ : Retourner vers la liste des projets
-      router.back();
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      // Fallback vers l'accueil
-      router.push('/(tabs)/');
-    }
+    return navigation.goBack();
   };
-
-  // Configuration du retour natif avec la même logique que le bouton "<"
-  useNativeBackHandler(handleBack);
 
   const resetForm = () => {
     setBuildingName('');
@@ -94,11 +85,7 @@ export default function ProjectDetailScreen() {
   };
 
   const handleCreateBuilding = () => {
-    try {
-      router.push(`/(tabs)/building/create?projectId=${id}`);
-    } catch (error) {
-      console.error('Erreur de navigation vers création bâtiment:', error);
-    }
+    navigation.navigate(`/(tabs)/building/create`, { projectId: id }, 'Nouveau bâtiment');
   };
 
   const handleSelectionMode = () => {
@@ -199,7 +186,7 @@ export default function ProjectDetailScreen() {
     if (selectionMode) {
       handleBuildingSelection(building.id);
     } else {
-      router.push(`/(tabs)/building/${building.id}`);
+      navigation.navigate(`/(tabs)/building/${building.id}`, { id: building.id }, building.name);
     }
   };
 
@@ -253,11 +240,7 @@ export default function ProjectDetailScreen() {
   };
 
   const handleEditBuilding = (building: BuildingType) => {
-    try {
-      router.push(`/(tabs)/building/edit/${building.id}`);
-    } catch (error) {
-      console.error('Erreur de navigation vers édition bâtiment:', error);
-    }
+    navigation.navigate(`/(tabs)/building/edit/${building.id}`, { id: building.id }, 'Modifier le bâtiment');
   };
 
   const handleDeleteBuilding = async (building: BuildingType) => {
@@ -287,12 +270,7 @@ export default function ProjectDetailScreen() {
   };
 
   const handleEditProject = () => {
-    try {
-      router.push(`/(tabs)/project/edit/${id}`);
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      Alert.alert(strings.error, 'Impossible d\'ouvrir la page de modification.');
-    }
+    navigation.navigate(`/(tabs)/project/edit/${id}`, { id }, 'Modifier le projet');
   };
 
   const getBuildingStats = (building: BuildingType) => {

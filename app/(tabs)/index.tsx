@@ -16,7 +16,7 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 import { exportProject, getRelatedNotes } from '@/utils/projectExport';
 import { isValidCalcProjetFile } from '@/utils/fileTypes';
 import { FileImporter } from '@/components/FileImporter';
-import { useNativeBackHandler, useDoubleBackToExit } from '@/utils/BackHandler';
+import { useNavigation } from '@/contexts/NavigationContext';
 
 interface PredefinedZone {
   id: string;
@@ -40,6 +40,7 @@ interface PredefinedStructure {
 export default function ProjectsScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const { showModal, hideModal } = useModal();
   const { 
     projects, 
@@ -60,10 +61,6 @@ export default function ProjectsScreen() {
   const [selectedProjects, setSelectedProjects] = useState<Set<string>>(new Set());
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Configuration du retour natif pour la page d'accueil
-  useDoubleBackToExit(); // Double appui pour quitter sur Android
-  useNativeBackHandler(undefined, true); // Marquer comme page d'accueil
 
   // Fonction locale pour gérer l'ouverture du modal
   const handleCreateModal = useCallback(() => {
@@ -256,13 +253,7 @@ export default function ProjectsScreen() {
     if (selectionMode) {
       handleProjectSelection(project.id);
     } else {
-      try {
-        router.push(`/(tabs)/project/${project.id}`);
-      } catch (error) {
-        console.error('Erreur navigation vers projet:', error);
-        // Fallback avec replace
-        router.replace(`/(tabs)/project/${project.id}`);
-      }
+      navigation.navigate(`/(tabs)/project/${project.id}`, { id: project.id }, project.name);
     }
   };
 

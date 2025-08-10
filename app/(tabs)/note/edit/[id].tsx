@@ -11,11 +11,12 @@ import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { compressImageFromFile, validateImageBase64, formatFileSize } from '@/utils/imageCompression';
-import { useNativeBackHandler } from '@/utils/BackHandler';
+import { useNavigation } from '@/contexts/NavigationContext';
 
 export default function EditNoteScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const { notes, updateNote } = useStorage();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [note, setNote] = useState<Note | null>(null);
@@ -58,20 +59,8 @@ export default function EditNoteScreen() {
   };
 
   const handleBack = () => {
-    try {
-      router.back();
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      if (note) {
-        router.push(`/(tabs)/note/${note.id}`);
-      } else {
-        router.push('/(tabs)/notes');
-      }
-    }
+    return navigation.goBack();
   };
-
-  // Configuration du retour natif avec la même logique que le bouton "<"
-  useNativeBackHandler(handleBack);
 
   const safeNavigate = (path: string) => {
     try {

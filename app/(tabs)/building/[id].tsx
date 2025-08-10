@@ -9,13 +9,14 @@ import { Project, Building, FunctionalZone } from '@/types';
 import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNativeBackHandler } from '@/utils/BackHandler';
+import { useNavigation } from '@/contexts/NavigationContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useModal } from '@/contexts/ModalContext';
 
 export default function BuildingDetailScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const { showModal, hideModal } = useModal();
   const { 
     projects, 
@@ -77,35 +78,15 @@ export default function BuildingDetailScreen() {
   }, [loadBuilding]);
 
   const handleBack = () => {
-    try {
-      if (project) {
-        router.back();
-      } else {
-        router.push('/(tabs)/');
-      }
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      router.push('/(tabs)/');
-    }
+    return navigation.goBack();
   };
 
-  // Configuration du retour natif avec la même logique que le bouton "<"
-  useNativeBackHandler(handleBack);
-
   const handleEditBuilding = () => {
-    try {
-      router.push(`/(tabs)/building/edit/${id}`);
-    } catch (error) {
-      console.error('Erreur de navigation vers édition:', error);
-    }
+    navigation.navigate(`/(tabs)/building/edit/${id}`, { id }, 'Modifier le bâtiment');
   };
 
   const handleCreateZone = () => {
-    try {
-      router.push(`/(tabs)/zone/create?buildingId=${id}`);
-    } catch (error) {
-      console.error('Erreur de navigation vers création zone:', error);
-    }
+    navigation.navigate(`/(tabs)/zone/create`, { buildingId: id }, 'Nouvelle zone');
   };
 
   const handleZonePress = (zone: FunctionalZone) => {
@@ -115,7 +96,7 @@ export default function BuildingDetailScreen() {
       return;
     }
 
-    router.push(`/(tabs)/zone/${zone.id}`);
+    navigation.navigate(`/(tabs)/zone/${zone.id}`, { id: zone.id }, zone.name);
   };
 
   // Fonction pour éditer une zone

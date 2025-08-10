@@ -11,13 +11,14 @@ import { useStorage } from '@/contexts/StorageContext';
 import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNativeBackHandler } from '@/utils/BackHandler';
+import { useNavigation } from '@/contexts/NavigationContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useModal } from '@/contexts/ModalContext';
 
 export default function ZoneDetailScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const { showModal, hideModal } = useModal();
   const { 
     projects, 
@@ -102,42 +103,22 @@ export default function ZoneDetailScreen() {
   }, [loadZone]);
 
   const handleBack = () => {
-    try {
-      if (building) {
-        router.back();
-      } else {
-        router.push('/(tabs)/');
-      }
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      router.push('/(tabs)/');
-    }
+    return navigation.goBack();
   };
 
-  // Configuration du retour natif avec la même logique que le bouton "<"
-  useNativeBackHandler(handleBack);
-
   const handleEditZone = () => {
-    try {
-      router.push(`/(tabs)/zone/edit/${id}`);
-    } catch (error) {
-      console.error('Erreur de navigation vers édition:', error);
-    }
+    navigation.navigate(`/(tabs)/zone/edit/${id}`, { id }, 'Modifier la zone');
   };
 
   const handleCreateShutter = () => {
-    try {
-      router.push(`/(tabs)/shutter/create?zoneId=${id}`);
-    } catch (error) {
-      console.error('Erreur de navigation vers création volet:', error);
-    }
+    navigation.navigate(`/(tabs)/shutter/create`, { zoneId: id }, 'Nouveau volet');
   };
 
   const handleShutterPress = (shutter: Shutter) => {
     if (selectionMode) {
       handleShutterSelection(shutter.id);
     } else {
-      router.push(`/(tabs)/shutter/${shutter.id}`);
+      navigation.navigate(`/(tabs)/shutter/${shutter.id}`, { id: shutter.id }, shutter.name);
     }
   };
 

@@ -8,11 +8,12 @@ import { Project, Building, FunctionalZone } from '@/types';
 import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNativeBackHandler } from '@/utils/BackHandler';
+import { useNavigation } from '@/contexts/NavigationContext';
 
 export default function EditZoneScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const { projects, updateFunctionalZone } = useStorage();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [zone, setZone] = useState<FunctionalZone | null>(null);
@@ -55,22 +56,8 @@ export default function EditZoneScreen() {
 
   // CORRIGÉ : Retourner vers la page de la zone (et non du bâtiment)
   const handleBack = () => {
-    try {
-      router.back();
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      if (zone) {
-        router.push(`/(tabs)/zone/${zone.id}`);
-      } else if (building) {
-        router.push(`/(tabs)/building/${building.id}`);
-      } else {
-        router.push('/(tabs)/');
-      }
-    }
+    return navigation.goBack();
   };
-
-  // Configuration du retour natif avec la même logique que le bouton "<"
-  useNativeBackHandler(handleBack);
 
   const validateForm = () => {
     const newErrors: { name?: string } = {};
@@ -97,8 +84,7 @@ export default function EditZoneScreen() {
 
       if (updatedZone) {
         console.log('✅ Zone mise à jour avec succès');
-        // CORRIGÉ : Retourner vers la page de la zone (et non du bâtiment)
-        router.push(`/(tabs)/zone/${zone.id}`);
+        navigation.goBack();
       } else {
         console.error('❌ Erreur: Zone non trouvée pour la mise à jour');
       }

@@ -8,6 +8,7 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { StorageProvider } from '@/contexts/StorageContext';
 import { ModalProvider } from '@/contexts/ModalContext';
+import { NavigationProvider } from '@/contexts/NavigationContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { AuthenticationScreen } from '@/components/AuthenticationScreen';
 import { InstallPrompt } from '@/components/InstallPrompt';
@@ -226,13 +227,15 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <AuthProvider>
-          <StorageProvider>
-            <ModalProvider>
-              <AuthenticatedApp />
-            </ModalProvider>
-          </StorageProvider>
-        </AuthProvider>
+        <NavigationProvider>
+          <AuthProvider>
+            <StorageProvider>
+              <ModalProvider>
+                <AuthenticatedApp />
+              </ModalProvider>
+            </StorageProvider>
+          </AuthProvider>
+        </NavigationProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

@@ -8,11 +8,12 @@ import { Project, Building } from '@/types';
 import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNativeBackHandler } from '@/utils/BackHandler';
+import { useNavigation } from '@/contexts/NavigationContext';
 
 export default function EditBuildingScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const { projects, updateBuilding } = useStorage();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [building, setBuilding] = useState<Building | null>(null);
@@ -51,22 +52,8 @@ export default function EditBuildingScreen() {
 
   // CORRIGÉ : Retourner vers la page du bâtiment (et non du projet)
   const handleBack = () => {
-    try {
-      router.back();
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      if (building) {
-        router.push(`/(tabs)/building/${building.id}`);
-      } else if (project) {
-        router.push(`/(tabs)/project/${project.id}`);
-      } else {
-        router.push('/(tabs)/');
-      }
-    }
+    return navigation.goBack();
   };
-
-  // Configuration du retour natif avec la même logique que le bouton "<"
-  useNativeBackHandler(handleBack);
 
   const validateForm = () => {
     const newErrors: { name?: string } = {};
@@ -93,8 +80,7 @@ export default function EditBuildingScreen() {
 
       if (updatedBuilding) {
         console.log('✅ Bâtiment mis à jour avec succès');
-        // CORRIGÉ : Retourner vers la page du bâtiment (et non du projet)
-        router.push(`/(tabs)/building/${building.id}`);
+        navigation.goBack();
       } else {
         console.error('❌ Erreur: Bâtiment non trouvé pour la mise à jour');
       }

@@ -11,12 +11,13 @@ import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useModal } from '@/contexts/ModalContext';
-import { useNativeBackHandler } from '@/utils/BackHandler';
+import { useNavigation } from '@/contexts/NavigationContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function ShutterDetailScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const { showModal, hideModal } = useModal();
   const { projects, updateShutter, deleteShutter } = useStorage();
   const { id, from } = useLocalSearchParams<{ id: string; from?: string }>();
@@ -90,33 +91,12 @@ export default function ShutterDetailScreen() {
   }, [shutter]);
 
   const handleBack = () => {
-    try {
-      if (from === 'search') {
-        router.back();
-      } else if (zone) {
-        router.back();
-      } else {
-        router.push('/(tabs)/');
-      }
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      router.push('/(tabs)/');
-    }
+    return navigation.goBack();
   };
 
-  // Configuration du retour natif avec la même logique que le bouton "<"
-  useNativeBackHandler(handleBack);
-
   const handleEdit = () => {
-    try {
-      if (from === 'search') {
-        router.push(`/(tabs)/shutter/edit/${id}?from=search`);
-      } else {
-        router.push(`/(tabs)/shutter/edit/${id}`);
-      }
-    } catch (error) {
-      console.error('Erreur de navigation vers édition:', error);
-    }
+    const params = from === 'search' ? { id, from: 'search' } : { id };
+    navigation.navigate(`/(tabs)/shutter/edit/${id}`, params, 'Modifier le volet');
   };
 
   const handleDelete = async () => {

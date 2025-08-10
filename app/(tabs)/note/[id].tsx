@@ -11,13 +11,14 @@ import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useModal } from '@/contexts/ModalContext';
-import { useNativeBackHandler } from '@/utils/BackHandler';
+import { useNavigation } from '@/contexts/NavigationContext';
 import { compressImageFromFile, validateImageBase64, formatFileSize } from '@/utils/imageCompression';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function NoteDetailScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const { showModal, hideModal } = useModal();
   const { notes, deleteNote, updateNote } = useStorage();
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -58,16 +59,8 @@ export default function NoteDetailScreen() {
   }, [note]);
 
   const handleBack = () => {
-    try {
-      router.back();
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      router.push('/(tabs)/notes');
-    }
+    return navigation.goBack();
   };
-
-  // Configuration du retour natif avec la même logique que le bouton "<"
-  useNativeBackHandler(handleBack);
 
   const safeNavigate = (path: string) => {
     try {
@@ -99,7 +92,7 @@ export default function NoteDetailScreen() {
   };
 
   const handleEditNote = () => {
-    safeNavigate(`/(tabs)/note/edit/${note.id}`);
+    navigation.navigate(`/(tabs)/note/edit/${note.id}`, { id: note.id }, 'Modifier la note');
   };
   const handleDelete = () => {
     if (!note) return;

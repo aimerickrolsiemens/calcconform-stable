@@ -9,11 +9,12 @@ import { Project } from '@/types';
 import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNativeBackHandler } from '@/utils/BackHandler';
+import { useNavigation } from '@/contexts/NavigationContext';
 
 export default function EditProjectScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const { projects, updateProject } = useStorage();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [project, setProject] = useState<Project | null>(null);
@@ -59,20 +60,8 @@ export default function EditProjectScreen() {
 
   // CORRIGÉ : Retourner vers la page du projet (et non la liste des projets)
   const handleBack = () => {
-    try {
-      router.back();
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      if (project) {
-        router.push(`/(tabs)/project/${project.id}`);
-      } else {
-        router.push('/(tabs)/');
-      }
-    }
+    return navigation.goBack();
   };
-
-  // Configuration du retour natif avec la même logique que le bouton "<"
-  useNativeBackHandler(handleBack);
 
   const validateForm = () => {
     const newErrors: { name?: string; startDate?: string; endDate?: string } = {};
@@ -149,8 +138,7 @@ export default function EditProjectScreen() {
 
       if (updatedProject) {
         console.log('✅ Projet mis à jour avec succès');
-        // CORRIGÉ : Retourner vers la page du projet (et non la liste des projets)
-        router.push(`/(tabs)/project/${project.id}`);
+        navigation.goBack();
       } else {
         console.error('❌ Erreur: Projet non trouvé pour la mise à jour');
       }

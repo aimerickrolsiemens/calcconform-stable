@@ -10,11 +10,12 @@ import { useStorage } from '@/contexts/StorageContext';
 import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNativeBackHandler } from '@/utils/BackHandler';
+import { useNavigation } from '@/contexts/NavigationContext';
 
 export default function EditShutterScreen() {
   const { strings, currentLanguage } = useLanguage();
   const { theme } = useTheme();
+  const navigation = useNavigation();
   const { projects, updateShutter } = useStorage();
   const { id, from } = useLocalSearchParams<{ id: string; from?: string }>();
   const [shutter, setShutter] = useState<Shutter | null>(null);
@@ -79,28 +80,8 @@ export default function EditShutterScreen() {
 
   // CORRIGÉ : Retourner vers la page du volet (et non de la zone)
   const handleBack = () => {
-    try {
-      router.back();
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      if (shutter) {
-        if (from === 'search') {
-          router.push(`/(tabs)/shutter/${shutter.id}?from=search`);
-        } else {
-          router.push(`/(tabs)/shutter/${shutter.id}`);
-        }
-      } else if (from === 'search') {
-        router.push('/(tabs)/search');
-      } else if (zone) {
-        router.push(`/(tabs)/zone/${zone.id}`);
-      } else {
-        router.push('/(tabs)/');
-      }
-    }
+    return navigation.goBack();
   };
-
-  // Configuration du retour natif avec la même logique que le bouton "<"
-  useNativeBackHandler(handleBack);
 
   const validateForm = () => {
     const newErrors: { name?: string; referenceFlow?: string; measuredFlow?: string } = {};
@@ -140,12 +121,7 @@ export default function EditShutterScreen() {
 
       if (updatedShutter) {
         console.log('✅ Volet mis à jour avec succès');
-        // CORRIGÉ : Retourner vers la page du volet (et non de la zone)
-        if (from === 'search') {
-          router.push(`/(tabs)/shutter/${shutter.id}?from=search`);
-        } else {
-          router.push(`/(tabs)/shutter/${shutter.id}`);
-        }
+        navigation.goBack();
       } else {
         console.error('❌ Erreur: Volet non trouvé pour la mise à jour');
       }
