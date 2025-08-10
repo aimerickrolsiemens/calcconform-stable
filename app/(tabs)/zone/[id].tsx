@@ -521,19 +521,7 @@ export default function ZoneDetailScreen() {
             )}
             <TouchableOpacity 
               style={[styles.shutterNameContainer, selectionMode && styles.shutterNameContainerSelection]}
-              onPress={() => {
-                if (selectionMode) {
-                  handleShutterSelection(item.id);
-                } else {
-                  handleShutterPress(item);
-                }
-              }}
-              onLongPress={() => {
-                if (!selectionMode) {
-                  setSelectionMode(true);
-                  handleShutterSelection(item.id);
-                }
-              }}
+              onPress={() => !selectionMode && openNameEditModal(item)}
               disabled={selectionMode}
             >
               <Text style={styles.shutterName} numberOfLines={1} ellipsizeMode="tail">
