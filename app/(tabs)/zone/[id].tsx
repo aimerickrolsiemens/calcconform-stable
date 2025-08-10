@@ -498,19 +498,12 @@ export default function ZoneDetailScreen() {
     const compliance = calculateCompliance(currentRefFlow, currentMeasFlow);
 
     return (
-      <TouchableOpacity
+      <View
         style={[
           styles.shutterCard,
           isSelected && styles.selectedCard,
           isFavorite && styles.favoriteCard
         ]}
-        onPress={() => handleShutterPress(item)}
-        onLongPress={() => {
-          if (!selectionMode) {
-            setSelectionMode(true);
-            handleShutterSelection(item.id);
-          }
-        }}
       >
         <View style={styles.shutterHeader}>
           <View style={styles.shutterTitleSection}>
@@ -528,14 +521,24 @@ export default function ZoneDetailScreen() {
             )}
             <TouchableOpacity 
               style={[styles.shutterNameContainer, selectionMode && styles.shutterNameContainerSelection]}
-              onPress={() => !selectionMode && openNameEditModal(item)}
+              onPress={() => {
+                if (selectionMode) {
+                  handleShutterSelection(item.id);
+                } else {
+                  handleShutterPress(item);
+                }
+              }}
+              onLongPress={() => {
+                if (!selectionMode) {
+                  setSelectionMode(true);
+                  handleShutterSelection(item.id);
+                }
+              }}
               disabled={selectionMode}
-            >
               <Text style={styles.shutterName} numberOfLines={1} ellipsizeMode="tail">
                 {item.name}
               </Text>
               {!selectionMode && <Text style={styles.editIcon}>✏️</Text>}
-            </TouchableOpacity>
             <View style={[styles.shutterTypeBadge, { 
               backgroundColor: item.type === 'high' ? '#10B981' : '#F59E0B' 
             }]}>
@@ -644,7 +647,7 @@ export default function ZoneDetailScreen() {
           <ComplianceIndicator compliance={compliance} size="small" />
         </View>
 
-        </TouchableOpacity>
+        </View>
     );
   };
 
