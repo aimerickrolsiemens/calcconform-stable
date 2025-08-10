@@ -574,16 +574,7 @@ export default function ZoneDetailScreen() {
         </View>
 
         <View style={styles.flowEditingContainer}>
-          <View style={styles.flowSectionHeader}>
-            <Text style={styles.flowSectionTitle}>Mesures de débit</Text>
-            <TouchableOpacity 
-              style={styles.detailButton}
-              onPress={() => !selectionMode && router.push(`/(tabs)/shutter/${item.id}`)}
-              disabled={selectionMode}
-            >
-              <Text style={styles.detailButtonText}>Détail</Text>
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.flowSectionTitle}>Mesures de débit</Text>
           <View style={styles.flowEditingRow}>
             <View style={styles.flowEditingField}>
               <View style={styles.flowLabelContainer}>
@@ -1287,30 +1278,11 @@ const createStyles = (theme: any) => StyleSheet.create({
     padding: 12,
     marginBottom: 12,
   },
-  flowSectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
   flowSectionTitle: {
     fontSize: 14,
     fontFamily: 'Inter-SemiBold',
     color: theme.colors.text,
-    flex: 1,
-  },
-  detailButton: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    backgroundColor: theme.colors.primary + '20',
-    borderWidth: 1,
-    borderColor: theme.colors.primary + '40',
-  },
-  detailButtonText: {
-    fontSize: 11,
-    fontFamily: 'Inter-Medium',
-    color: theme.colors.primary,
+    marginBottom: 8,
   },
   flowEditingRow: {
     flexDirection: 'row',
