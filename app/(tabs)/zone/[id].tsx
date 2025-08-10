@@ -17,7 +17,6 @@ import { useModal } from '@/contexts/ModalContext';
 export default function ZoneDetailScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
-  const navigation = useNavigation();
   const { showModal, hideModal } = useModal();
   const { 
     projects, 
@@ -106,11 +105,11 @@ export default function ZoneDetailScreen() {
   };
 
   const handleEditZone = () => {
-    navigation.navigate(`/(tabs)/zone/edit/${id}`, { id }, 'Modifier la zone');
+    router.push(`/(tabs)/zone/edit/${id}`);
   };
 
   const handleCreateShutter = () => {
-    navigation.navigate(`/(tabs)/shutter/create`, { zoneId: id }, 'Nouveau volet');
+    router.push(`/(tabs)/shutter/create?zoneId=${id}`);
   };
 
   const handleShutterPress = (shutter: Shutter) => {
