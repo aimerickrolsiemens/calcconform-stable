@@ -8,7 +8,7 @@ import { Project, Building, FunctionalZone } from '@/types';
 import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useAndroidBackButton } from '@/utils/BackHandler';
+import { useNativeBackHandler } from '@/utils/BackHandler';
 
 export default function EditZoneScreen() {
   const { strings } = useLanguage();
@@ -23,9 +23,6 @@ export default function EditZoneScreen() {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [errors, setErrors] = useState<{ name?: string }>({});
-
-  // Configure Android back button to go back to the zone screen
-  useAndroidBackButton();
 
   useEffect(() => {
     loadZone();
@@ -71,6 +68,9 @@ export default function EditZoneScreen() {
       router.push('/(tabs)/');
     }
   };
+
+  // Configuration du retour natif avec la même logique que le bouton "<"
+  useNativeBackHandler(handleBack);
 
   const validateForm = () => {
     const newErrors: { name?: string } = {};

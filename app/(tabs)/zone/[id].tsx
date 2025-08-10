@@ -11,7 +11,7 @@ import { useStorage } from '@/contexts/StorageContext';
 import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useAndroidBackButton } from '@/utils/BackHandler';
+import { useNativeBackHandler } from '@/utils/BackHandler';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useModal } from '@/contexts/ModalContext';
 
@@ -49,9 +49,6 @@ export default function ZoneDetailScreen() {
       hasBeenFocused: { referenceFlow: boolean; measuredFlow: boolean };
     }
   }>({});
-
-  // Configure Android back button to go back to the building screen
-  useAndroidBackButton();
 
   const loadZone = useCallback(async () => {
     try {
@@ -116,6 +113,9 @@ export default function ZoneDetailScreen() {
       router.push('/(tabs)/');
     }
   };
+
+  // Configuration du retour natif avec la même logique que le bouton "<"
+  useNativeBackHandler(handleBack);
 
   const handleEditZone = () => {
     try {

@@ -16,6 +16,7 @@ import { LoadingScreen } from '@/components/LoadingScreen';
 import { exportProject, getRelatedNotes } from '@/utils/projectExport';
 import { isValidCalcProjetFile } from '@/utils/fileTypes';
 import { FileImporter } from '@/components/FileImporter';
+import { useNativeBackHandler, useDoubleBackToExit } from '@/utils/BackHandler';
 
 interface PredefinedZone {
   id: string;
@@ -59,6 +60,10 @@ export default function ProjectsScreen() {
   const [selectedProjects, setSelectedProjects] = useState<Set<string>>(new Set());
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Configuration du retour natif pour la page d'accueil
+  useDoubleBackToExit(); // Double appui pour quitter sur Android
+  useNativeBackHandler(undefined, true); // Marquer comme page d'accueil
 
   // Fonction locale pour gérer l'ouverture du modal
   const handleCreateModal = useCallback(() => {

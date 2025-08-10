@@ -11,7 +11,7 @@ import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { compressImageFromFile, validateImageBase64, formatFileSize } from '@/utils/imageCompression';
-import { useAndroidBackButton } from '@/utils/BackHandler';
+import { useNativeBackHandler } from '@/utils/BackHandler';
 
 export default function EditNoteScreen() {
   const { strings } = useLanguage();
@@ -29,9 +29,6 @@ export default function EditNoteScreen() {
   const [initialLoading, setInitialLoading] = useState(true);
   const [errors, setErrors] = useState<{ title?: string }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Configure Android back button
-  useAndroidBackButton();
 
   useEffect(() => {
     loadNote();
@@ -67,6 +64,9 @@ export default function EditNoteScreen() {
       safeNavigate('/(tabs)/notes');
     }
   };
+
+  // Configuration du retour natif avec la même logique que le bouton "<"
+  useNativeBackHandler(handleBack);
 
   const safeNavigate = (path: string) => {
     try {

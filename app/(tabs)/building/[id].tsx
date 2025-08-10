@@ -9,7 +9,7 @@ import { Project, Building, FunctionalZone } from '@/types';
 import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useAndroidBackButton } from '@/utils/BackHandler';
+import { useNativeBackHandler } from '@/utils/BackHandler';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useModal } from '@/contexts/ModalContext';
 
@@ -37,9 +37,6 @@ export default function BuildingDetailScreen() {
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedZones, setSelectedZones] = useState<Set<string>>(new Set());
 
-
-  // Configure Android back button to go back to the project screen
-  useAndroidBackButton();
 
 
   const loadBuilding = useCallback(async () => {
@@ -91,6 +88,9 @@ export default function BuildingDetailScreen() {
       router.push('/(tabs)/');
     }
   };
+
+  // Configuration du retour natif avec la même logique que le bouton "<"
+  useNativeBackHandler(handleBack);
 
   const handleEditBuilding = () => {
     try {

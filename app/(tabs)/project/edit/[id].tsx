@@ -9,7 +9,7 @@ import { Project } from '@/types';
 import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useAndroidBackButton } from '@/utils/BackHandler';
+import { useNativeBackHandler } from '@/utils/BackHandler';
 
 export default function EditProjectScreen() {
   const { strings } = useLanguage();
@@ -24,9 +24,6 @@ export default function EditProjectScreen() {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [errors, setErrors] = useState<{ name?: string; startDate?: string; endDate?: string }>({});
-
-  // Configure Android back button to go back to the project screen
-  useAndroidBackButton();
 
   useEffect(() => {
     loadProject();
@@ -73,6 +70,9 @@ export default function EditProjectScreen() {
       router.push('/(tabs)/');
     }
   };
+
+  // Configuration du retour natif avec la même logique que le bouton "<"
+  useNativeBackHandler(handleBack);
 
   const validateForm = () => {
     const newErrors: { name?: string; startDate?: string; endDate?: string } = {};

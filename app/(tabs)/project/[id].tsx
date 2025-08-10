@@ -10,7 +10,7 @@ import { useStorage } from '@/contexts/StorageContext';
 import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useAndroidBackButton } from '@/utils/BackHandler';
+import { useNativeBackHandler } from '@/utils/BackHandler';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useModal } from '@/contexts/ModalContext';
 
@@ -40,9 +40,6 @@ export default function ProjectDetailScreen() {
   const [formLoading, setFormLoading] = useState(false);
   const [errors, setErrors] = useState<{ name?: string }>({});
 
-
-  // Configure Android back button to go back to the home screen
-  useAndroidBackButton();
 
 
   const loadProject = useCallback(async () => {
@@ -86,6 +83,9 @@ export default function ProjectDetailScreen() {
       router.push('/(tabs)/');
     }
   };
+
+  // Configuration du retour natif avec la même logique que le bouton "<"
+  useNativeBackHandler(handleBack);
 
   const resetForm = () => {
     setBuildingName('');

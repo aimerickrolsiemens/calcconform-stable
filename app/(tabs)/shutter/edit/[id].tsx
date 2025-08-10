@@ -10,7 +10,7 @@ import { useStorage } from '@/contexts/StorageContext';
 import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useAndroidBackButton } from '@/utils/BackHandler';
+import { useNativeBackHandler } from '@/utils/BackHandler';
 
 export default function EditShutterScreen() {
   const { strings, currentLanguage } = useLanguage();
@@ -29,9 +29,6 @@ export default function EditShutterScreen() {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const [errors, setErrors] = useState<{ name?: string; referenceFlow?: string; measuredFlow?: string }>({});
-
-  // Configure Android back button to go back to the shutter screen
-  useAndroidBackButton();
 
   const getShutterPrefix = (shutterType: ShutterType, language: string) => {
     const prefixes = {
@@ -101,6 +98,9 @@ export default function EditShutterScreen() {
       router.push('/(tabs)/');
     }
   };
+
+  // Configuration du retour natif avec la même logique que le bouton "<"
+  useNativeBackHandler(handleBack);
 
   const validateForm = () => {
     const newErrors: { name?: string; referenceFlow?: string; measuredFlow?: string } = {};

@@ -3,67 +3,53 @@ import { BackHandler, Platform } from 'react-native';
 import { router } from 'expo-router';
 
 /**
- * Custom hook to handle Android back button presses
- * Optimisé pour utiliser la même logique que les boutons retour internes
+ * Hook pour gérer le retour natif avec la même logique que les boutons internes
  */
-export function useAndroidBackButton(customBackAction?: () => void, isHomePage?: boolean) {
+export function useNativeBackHandler(customBackAction?: () => void, isHomePage?: boolean) {
   useEffect(() => {
-    // Seulement sur Android pour éviter les erreurs sur autres plateformes
-    if (Platform.OS !== 'android') return;
+    // Seulement sur Android et iOS (pas web)
+    if (Platform.OS === 'web') return;
 
     const backAction = () => {
       try {
+        console.log('📱 Retour natif déclenché - isHomePage:', isHomePage);
+        
         // Si on est sur la page d'accueil, laisser le comportement par défaut (fermer l'app)
         if (isHomePage) {
-          console.log('📱 Page d\'accueil - fermeture de l\'app');
+          console.log('🏠 Page d\'accueil - fermeture de l\'app autorisée');
           return false;
         }
 
-        // Si il y a une action personnalisée, l'exécuter
+        // Si il y a une action personnalisée (même logique que le bouton "<"), l'exécuter
         if (customBackAction) {
-          console.log('📱 Exécution action retour personnalisée');
+          console.log('🔙 Exécution de l\'action retour personnalisée (même que bouton "<")');
           customBackAction();
-          return true;
+          return true; // Empêcher le comportement par défaut
         }
 
-        // Comportement par défaut : utiliser l'historique de navigation d'expo-router
+        // Fallback : utiliser l'historique d'expo-router si disponible
         if (router.canGoBack()) {
-          console.log('📱 Navigation retour via expo-router');
+          console.log('📱 Retour via expo-router');
           router.back();
           return true;
         }
 
-        // Si on ne peut pas revenir en arrière, laisser le comportement par défaut
+        // Si aucune navigation possible, laisser le comportement par défaut
         console.log('📱 Aucune navigation possible, fermeture de l\'app');
         return false;
       } catch (error) {
-        if (__DEV__) {
-          console.warn('Erreur dans useAndroidBackButton:', error);
-        }
-        // En cas d'erreur, essayer quand même de revenir en arrière
-        try {
-          if (router.canGoBack()) {
-            router.back();
-            return true;
-          }
-        } catch (fallbackError) {
-          console.warn('Erreur fallback navigation:', fallbackError);
-        }
+        console.warn('Erreur dans useNativeBackHandler:', error);
         return false;
       }
     };
 
-    // Ajouter l'écouteur d'événement avec gestion d'erreur
+    // Ajouter l'écouteur d'événement
     let backHandler: any = null;
     try {
-      backHandler = BackHandler.addEventListener(
-        'hardwareBackPress',
-        backAction
-      );
+      backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+      console.log('✅ BackHandler configuré avec action personnalisée');
     } catch (error) {
-      if (__DEV__) {
-        console.warn('Erreur lors de l\'ajout du BackHandler:', error);
-      }
+      console.warn('Erreur lors de l\'ajout du BackHandler:', error);
       return;
     }
 
@@ -72,19 +58,17 @@ export function useAndroidBackButton(customBackAction?: () => void, isHomePage?:
       try {
         if (backHandler && backHandler.remove) {
           backHandler.remove();
+          console.log('🧹 BackHandler nettoyé');
         }
       } catch (error) {
-        if (__DEV__) {
-          console.warn('Erreur lors du nettoyage BackHandler:', error);
-        }
+        console.warn('Erreur lors du nettoyage BackHandler:', error);
       }
     };
   }, [customBackAction, isHomePage]);
 }
 
 /**
- * Custom hook pour gérer le double appui pour quitter
- * Optimisé pour APK Android avec gestion d'erreur robuste
+ * Hook pour gérer le double appui pour quitter (page d'accueil uniquement)
  */
 export function useDoubleBackToExit() {
   useEffect(() => {
@@ -95,9 +79,9 @@ export function useDoubleBackToExit() {
 
     const handleBackPress = () => {
       try {
-        // Si c'est le premier appui ou que le timer a expiré
         if (backPressCount === 0 || !backPressTimer) {
           backPressCount = 1;
+          console.log('📱 Premier appui retour - appuyez encore pour quitter');
           
           // Réinitialiser le compteur après 2 secondes
           backPressTimer = setTimeout(() => {
@@ -109,26 +93,19 @@ export function useDoubleBackToExit() {
         } 
         
         // C'est le deuxième appui dans la fenêtre de temps
-        // Laisser le comportement par défaut (quitter l'app)
-        return false;
+        console.log('📱 Deuxième appui retour - fermeture de l\'app');
+        return false; // Laisser le comportement par défaut (quitter l'app)
       } catch (error) {
-        if (__DEV__) {
-          console.warn('Erreur dans useDoubleBackToExit:', error);
-        }
+        console.warn('Erreur dans useDoubleBackToExit:', error);
         return false;
       }
     };
 
     let backHandler: any = null;
     try {
-      backHandler = BackHandler.addEventListener(
-        'hardwareBackPress',
-        handleBackPress
-      );
+      backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
     } catch (error) {
-      if (__DEV__) {
-        console.warn('Erreur lors de l\'ajout du DoubleBackToExit:', error);
-      }
+      console.warn('Erreur lors de l\'ajout du DoubleBackToExit:', error);
       return;
     }
 
@@ -141,9 +118,7 @@ export function useDoubleBackToExit() {
           backHandler.remove();
         }
       } catch (error) {
-        if (__DEV__) {
-          console.warn('Erreur lors du nettoyage DoubleBackToExit:', error);
-        }
+        console.warn('Erreur lors du nettoyage DoubleBackToExit:', error);
       }
     };
   }, []);

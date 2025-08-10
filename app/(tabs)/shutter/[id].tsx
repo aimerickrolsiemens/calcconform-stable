@@ -11,7 +11,7 @@ import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useModal } from '@/contexts/ModalContext';
-import { useAndroidBackButton } from '@/utils/BackHandler';
+import { useNativeBackHandler } from '@/utils/BackHandler';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function ShutterDetailScreen() {
@@ -36,9 +36,6 @@ export default function ShutterDetailScreen() {
     measuredFlow: '',
     hasBeenFocused: { referenceFlow: false, measuredFlow: false }
   });
-
-  // Configure Android back button to go back to the zone screen or search
-  useAndroidBackButton();
 
   const loadShutter = useCallback(async () => {
     try {
@@ -106,6 +103,9 @@ export default function ShutterDetailScreen() {
       router.push('/(tabs)/');
     }
   };
+
+  // Configuration du retour natif avec la même logique que le bouton "<"
+  useNativeBackHandler(handleBack);
 
   const handleEdit = () => {
     try {

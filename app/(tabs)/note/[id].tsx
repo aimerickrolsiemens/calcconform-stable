@@ -11,7 +11,7 @@ import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useModal } from '@/contexts/ModalContext';
-import { useAndroidBackButton } from '@/utils/BackHandler';
+import { useNativeBackHandler } from '@/utils/BackHandler';
 import { compressImageFromFile, validateImageBase64, formatFileSize } from '@/utils/imageCompression';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
@@ -27,9 +27,6 @@ export default function NoteDetailScreen() {
   const [textInputHeight, setTextInputHeight] = useState(200); // Hauteur initiale
   const [contentHeight, setContentHeight] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Configure Android back button
-  useAndroidBackButton();
 
   const loadNote = useCallback(async () => {
     try {
@@ -63,6 +60,9 @@ export default function NoteDetailScreen() {
   const handleBack = () => {
     safeNavigate('/(tabs)/notes');
   };
+
+  // Configuration du retour natif avec la même logique que le bouton "<"
+  useNativeBackHandler(handleBack);
 
   const safeNavigate = (path: string) => {
     try {
