@@ -4,22 +4,25 @@ import { router } from 'expo-router';
 
 /**
  * Custom hook to handle Android back button presses
- * Optimisé pour APK Android avec gestion d'erreur robuste
+ * Optimisé pour utiliser la même logique que les boutons retour internes
  */
-export function useAndroidBackButton(customAction?: () => boolean, forceCustomAction?: boolean) {
+export function useAndroidBackButton(customBackAction?: () => void, isHomePage?: boolean) {
   useEffect(() => {
     // Seulement sur Android pour éviter les erreurs sur autres plateformes
     if (Platform.OS !== 'android') return;
 
     const backAction = () => {
       try {
-        // Si forceCustomAction est true, toujours exécuter l'action personnalisée
-        if (forceCustomAction && customAction) {
-          return customAction();
+        // Si on est sur la page d'accueil, laisser le comportement par défaut (fermer l'app)
+        if (isHomePage) {
+          console.log('📱 Page d\'accueil - fermeture de l\'app');
+          return false;
         }
-        
-        // Si il y a une action personnalisée et qu'elle retourne true, l'utiliser
-        if (customAction && customAction()) {
+
+        // Si il y a une action personnalisée, l'exécuter
+        if (customBackAction) {
+          console.log('📱 Exécution action retour personnalisée');
+          customBackAction();
           return true;
         }
 
@@ -30,8 +33,8 @@ export function useAndroidBackButton(customAction?: () => boolean, forceCustomAc
           return true;
         }
 
-        // Si on est sur l'écran d'accueil, laisser le comportement par défaut (fermer l'app)
-        console.log('📱 Sur l\'écran d\'accueil, fermeture de l\'app');
+        // Si on ne peut pas revenir en arrière, laisser le comportement par défaut
+        console.log('📱 Aucune navigation possible, fermeture de l\'app');
         return false;
       } catch (error) {
         if (__DEV__) {
@@ -76,7 +79,7 @@ export function useAndroidBackButton(customAction?: () => boolean, forceCustomAc
         }
       }
     };
-  }, [customAction, forceCustomAction]);
+  }, [customBackAction, isHomePage]);
 }
 
 /**
