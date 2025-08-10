@@ -535,10 +535,12 @@ export default function ZoneDetailScreen() {
                 }
               }}
               disabled={selectionMode}
+            >
               <Text style={styles.shutterName} numberOfLines={1} ellipsizeMode="tail">
                 {item.name}
               </Text>
               {!selectionMode && <Text style={styles.editIcon}>✏️</Text>}
+            </TouchableOpacity>
             <View style={[styles.shutterTypeBadge, { 
               backgroundColor: item.type === 'high' ? '#10B981' : '#F59E0B' 
             }]}>
@@ -647,7 +649,7 @@ export default function ZoneDetailScreen() {
           <ComplianceIndicator compliance={compliance} size="small" />
         </View>
 
-        </View>
+      </View>
     );
   };
 
