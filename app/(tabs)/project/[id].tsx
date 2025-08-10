@@ -10,14 +10,12 @@ import { useStorage } from '@/contexts/StorageContext';
 import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNavigation } from '@/contexts/NavigationContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useModal } from '@/contexts/ModalContext';
 
 export default function ProjectDetailScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
-  const navigation = useNavigation();
   const { showModal, hideModal } = useModal();
   const { 
     projects,
@@ -85,7 +83,7 @@ export default function ProjectDetailScreen() {
   };
 
   const handleCreateBuilding = () => {
-    navigation.navigate(`/(tabs)/building/create`, { projectId: id }, 'Nouveau bâtiment');
+    router.push(`/(tabs)/building/create?projectId=${id}`);
   };
 
   const handleSelectionMode = () => {
@@ -186,7 +184,7 @@ export default function ProjectDetailScreen() {
     if (selectionMode) {
       handleBuildingSelection(building.id);
     } else {
-      navigation.navigate(`/(tabs)/building/${building.id}`, { id: building.id }, building.name);
+      router.push(`/(tabs)/building/${building.id}`);
     }
   };
 
@@ -240,7 +238,7 @@ export default function ProjectDetailScreen() {
   };
 
   const handleEditBuilding = (building: BuildingType) => {
-    navigation.navigate(`/(tabs)/building/edit/${building.id}`, { id: building.id }, 'Modifier le bâtiment');
+    router.push(`/(tabs)/building/edit/${building.id}`);
   };
 
   const handleDeleteBuilding = async (building: BuildingType) => {
@@ -270,7 +268,7 @@ export default function ProjectDetailScreen() {
   };
 
   const handleEditProject = () => {
-    navigation.navigate(`/(tabs)/project/edit/${id}`, { id }, 'Modifier le projet');
+    router.push(`/(tabs)/project/edit/${id}`);
   };
 
   const getBuildingStats = (building: BuildingType) => {

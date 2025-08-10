@@ -12,7 +12,6 @@ import { NavigationProvider } from '@/contexts/NavigationContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { AuthenticationScreen } from '@/components/AuthenticationScreen';
 import { InstallPrompt } from '@/components/InstallPrompt';
-import { useDoubleBackToExit } from '@/utils/BackHandler';
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
 import { Platform, View, Text, StyleSheet } from 'react-native';
 

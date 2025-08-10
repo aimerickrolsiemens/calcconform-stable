@@ -11,12 +11,10 @@ import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useModal } from '@/contexts/ModalContext';
-import { addEventListener } from '@/utils/EventEmitter';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { exportProject, getRelatedNotes } from '@/utils/projectExport';
 import { isValidCalcProjetFile } from '@/utils/fileTypes';
 import { FileImporter } from '@/components/FileImporter';
-import { useNavigation } from '@/contexts/NavigationContext';
 
 interface PredefinedZone {
   id: string;
@@ -40,7 +38,6 @@ interface PredefinedStructure {
 export default function ProjectsScreen() {
   const { strings } = useLanguage();
   const { theme } = useTheme();
-  const navigation = useNavigation();
   const { showModal, hideModal } = useModal();
   const { 
     projects, 
@@ -253,7 +250,7 @@ export default function ProjectsScreen() {
     if (selectionMode) {
       handleProjectSelection(project.id);
     } else {
-      navigation.navigate(`/(tabs)/project/${project.id}`, { id: project.id }, project.name);
+      router.push(`/(tabs)/project/${project.id}`);
     }
   };
 

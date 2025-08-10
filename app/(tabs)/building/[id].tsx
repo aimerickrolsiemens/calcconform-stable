@@ -9,7 +9,6 @@ import { Project, Building, FunctionalZone } from '@/types';
 import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNavigation } from '@/contexts/NavigationContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useModal } from '@/contexts/ModalContext';
 
@@ -78,7 +77,7 @@ export default function BuildingDetailScreen() {
   }, [loadBuilding]);
 
   const handleBack = () => {
-    return navigation.goBack();
+    router.back();
   };
 
   const handleEditBuilding = () => {
@@ -86,7 +85,7 @@ export default function BuildingDetailScreen() {
   };
 
   const handleCreateZone = () => {
-    navigation.navigate(`/(tabs)/zone/create`, { buildingId: id }, 'Nouvelle zone');
+    router.push(`/(tabs)/zone/create?buildingId=${id}`);
   };
 
   const handleZonePress = (zone: FunctionalZone) => {
