@@ -573,11 +573,15 @@ export default function ZoneDetailScreen() {
           )}
         </View>
 
-        <TouchableOpacity 
-          style={styles.flowEditingContainer}
-          activeOpacity={1}
-          onPress={(e) => e.stopPropagation()}
-        >
+        <View style={styles.flowEditingContainer}>
+          <TouchableOpacity 
+            style={styles.flowSectionClickable}
+            onPress={() => !selectionMode && router.push(`/(tabs)/shutter/${item.id}`)}
+            activeOpacity={0.7}
+            disabled={selectionMode}
+          >
+            <View style={styles.flowSectionOverlay} />
+          </TouchableOpacity>
           <Text style={styles.flowSectionTitle}>Mesures de débit</Text>
           <View style={styles.flowEditingRow}>
             <View style={styles.flowEditingField}>
@@ -596,7 +600,6 @@ export default function ZoneDetailScreen() {
                 placeholder="Ex: 5000"
                 placeholderTextColor={theme.colors.textTertiary}
                 selectTextOnFocus={true}
-                onPressIn={(e) => e.stopPropagation()}
               />
             </View>
             
@@ -615,7 +618,6 @@ export default function ZoneDetailScreen() {
                 placeholder="Ex: 4800"
                 placeholderTextColor={theme.colors.textTertiary}
                 selectTextOnFocus={true}
-                onPressIn={(e) => e.stopPropagation()}
               />
             </View>
             
@@ -631,13 +633,17 @@ export default function ZoneDetailScreen() {
               </View>
             </View>
           </View>
-        </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity 
-          style={styles.remarksEditingContainer}
-          activeOpacity={1}
-          onPress={(e) => e.stopPropagation()}
-        >
+        <View style={styles.remarksEditingContainer}>
+          <TouchableOpacity 
+            style={styles.remarksSectionClickable}
+            onPress={() => !selectionMode && router.push(`/(tabs)/shutter/${item.id}`)}
+            activeOpacity={0.7}
+            disabled={selectionMode}
+          >
+            <View style={styles.remarksSectionOverlay} />
+          </TouchableOpacity>
           <TextInput
             style={styles.remarksEditingInput}
             value={editingData?.remarks || ''}
@@ -647,19 +653,8 @@ export default function ZoneDetailScreen() {
             placeholderTextColor={theme.colors.textTertiary}
             multiline={false}
             textAlignVertical="top"
-            onPressIn={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-            }}
-            onFocus={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-            }}
-            onTouchStart={(e) => {
-              e.stopPropagation();
-            }}
           />
-        </TouchableOpacity>
+        </View>
 
         <View style={styles.complianceSection}>
           <ComplianceIndicator compliance={compliance} size="small" />
@@ -1298,16 +1293,40 @@ const createStyles = (theme: any) => StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
+    position: 'relative',
+  },
+  flowSectionClickable: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1,
+    borderRadius: 8,
+  },
+  flowSectionOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 8,
   },
   flowSectionTitle: {
     fontSize: 14,
     fontFamily: 'Inter-SemiBold',
     color: theme.colors.text,
     marginBottom: 8,
+    position: 'relative',
+    zIndex: 2,
+    pointerEvents: 'none',
   },
   flowEditingRow: {
     flexDirection: 'row',
     gap: 8,
+    position: 'relative',
+    zIndex: 2,
   },
   flowEditingField: {
     flex: 1,
@@ -1345,6 +1364,8 @@ const createStyles = (theme: any) => StyleSheet.create({
     color: theme.colors.text,
     textAlign: 'center',
     height: 40,
+    position: 'relative',
+    zIndex: 3,
   },
   deviationDisplay: {
     borderWidth: 1,
@@ -1358,6 +1379,8 @@ const createStyles = (theme: any) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 40,
+    position: 'relative',
+    zIndex: 2,
   },
   deviationValue: {
     fontSize: 14,
@@ -1403,12 +1426,33 @@ const createStyles = (theme: any) => StyleSheet.create({
       : theme.colors.inputBackground,
     color: theme.colors.text,
     height: 36,
+    position: 'relative',
+    zIndex: 3,
   },
   remarksEditingContainer: {
     backgroundColor: theme.colors.surfaceSecondary,
     borderRadius: 6,
     padding: 4,
     marginBottom: 12,
+    position: 'relative',
+  },
+  remarksSectionClickable: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1,
+    borderRadius: 6,
+  },
+  remarksSectionOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'transparent',
+    borderRadius: 6,
   },
   modalContent: {
     backgroundColor: theme.colors.surface,
