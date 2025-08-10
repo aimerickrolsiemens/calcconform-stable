@@ -140,20 +140,21 @@ export default function CreateNoteScreen() {
           }
         } else {
           console.warn(`⚠️ Image ${i + 1} invalide, ignorée`);
-        }
-      }
-      
-      console.log(`📸 Images validées pour création: ${validImages.length}/${images.length}`);
-      
-      // Préparer les données de la note avec gestion d'erreur robuste
-      const noteData = {
-        title: finalTitle,
-        description: description.trim() || undefined,
         location: location.trim() || undefined,
         tags: tags.trim() || undefined,
         content: content.trim(),
         images: validImages.length > 0 ? validImages : undefined
       };
+      
+      console.log('📋 Données finales de la note à créer:', {
+        title: noteData.title,
+        hasDescription: !!noteData.description,
+        hasLocation: !!noteData.location,
+        hasTags: !!noteData.tags,
+        contentLength: noteData.content.length,
+        finalImagesCount: noteData.images?.length || 0,
+        hasImages: !!noteData.images
+      });
       
       console.log('📋 Données finales de la note à créer:', {
         title: noteData.title,
