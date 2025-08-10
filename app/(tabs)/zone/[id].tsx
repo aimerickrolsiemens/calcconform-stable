@@ -574,15 +574,16 @@ export default function ZoneDetailScreen() {
         </View>
 
         <View style={styles.flowEditingContainer}>
-          <TouchableOpacity 
-            style={styles.flowSectionClickable}
-            onPress={() => !selectionMode && router.push(`/(tabs)/shutter/${item.id}`)}
-            activeOpacity={0.7}
-            disabled={selectionMode}
-          >
-            <View style={styles.flowSectionOverlay} />
-          </TouchableOpacity>
-          <Text style={styles.flowSectionTitle}>Mesures de débit</Text>
+          <View style={styles.flowSectionHeader}>
+            <Text style={styles.flowSectionTitle}>Mesures de débit</Text>
+            <TouchableOpacity 
+              style={styles.detailButton}
+              onPress={() => !selectionMode && router.push(`/(tabs)/shutter/${item.id}`)}
+              disabled={selectionMode}
+            >
+              <Text style={styles.detailButtonText}>Détail</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.flowEditingRow}>
             <View style={styles.flowEditingField}>
               <View style={styles.flowLabelContainer}>
@@ -636,14 +637,6 @@ export default function ZoneDetailScreen() {
         </View>
 
         <View style={styles.remarksEditingContainer}>
-          <TouchableOpacity 
-            style={styles.remarksSectionClickable}
-            onPress={() => !selectionMode && router.push(`/(tabs)/shutter/${item.id}`)}
-            activeOpacity={0.7}
-            disabled={selectionMode}
-          >
-            <View style={styles.remarksSectionOverlay} />
-          </TouchableOpacity>
           <TextInput
             style={styles.remarksEditingInput}
             value={editingData?.remarks || ''}
@@ -1293,40 +1286,35 @@ const createStyles = (theme: any) => StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
-    position: 'relative',
   },
-  flowSectionClickable: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 1,
-    borderRadius: 8,
-  },
-  flowSectionOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'transparent',
-    borderRadius: 8,
+  flowSectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   flowSectionTitle: {
     fontSize: 14,
     fontFamily: 'Inter-SemiBold',
     color: theme.colors.text,
-    marginBottom: 8,
-    position: 'relative',
-    zIndex: 2,
-    pointerEvents: 'none',
+    flex: 1,
+  },
+  detailButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    backgroundColor: theme.colors.primary + '20',
+    borderWidth: 1,
+    borderColor: theme.colors.primary + '40',
+  },
+  detailButtonText: {
+    fontSize: 11,
+    fontFamily: 'Inter-Medium',
+    color: theme.colors.primary,
   },
   flowEditingRow: {
     flexDirection: 'row',
     gap: 8,
-    position: 'relative',
-    zIndex: 2,
   },
   flowEditingField: {
     flex: 1,
@@ -1364,8 +1352,6 @@ const createStyles = (theme: any) => StyleSheet.create({
     color: theme.colors.text,
     textAlign: 'center',
     height: 40,
-    position: 'relative',
-    zIndex: 3,
   },
   deviationDisplay: {
     borderWidth: 1,
@@ -1379,8 +1365,6 @@ const createStyles = (theme: any) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 40,
-    position: 'relative',
-    zIndex: 2,
   },
   deviationValue: {
     fontSize: 14,
@@ -1391,26 +1375,7 @@ const createStyles = (theme: any) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 8,
-  },
   invalidReferenceText: {
-    fontSize: 12,
-    fontFamily: 'Inter-Medium',
-    color: theme.colors.warning,
-    fontStyle: 'italic',
-  },
-  remarksSection: {
-    backgroundColor: theme.colors.primary + '20',
-    borderRadius: 6,
-    padding: 8,
-    borderLeftWidth: 3,
-    borderLeftColor: theme.colors.primary,
-  },
-  remarksText: {
-    fontSize: 12,
-    fontFamily: 'Inter-Regular',
-    color: theme.colors.primary,
-    lineHeight: 16,
-  },
   remarksEditingInput: {
     borderWidth: 1,
     borderColor: theme.mode === 'dark' 
@@ -1426,8 +1391,6 @@ const createStyles = (theme: any) => StyleSheet.create({
       : theme.colors.inputBackground,
     color: theme.colors.text,
     height: 36,
-    position: 'relative',
-    zIndex: 3,
   },
   remarksEditingContainer: {
     backgroundColor: theme.colors.surfaceSecondary,
