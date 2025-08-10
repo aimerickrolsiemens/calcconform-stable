@@ -727,12 +727,12 @@ export default function ZoneDetailScreen() {
                 <Square size={20} color={theme.colors.textTertiary} />
               )}
               <Text style={[
-  selectedShutters.size === sortedShutters.length
-    ? styles.selectAllButtonTextActive
-    : styles.selectAllButtonTextInactive
-]}>
-  {selectedShutters.size === sortedShutters.length ? 'Tout désélectionner' : 'Tout sélectionner'}
-</Text>
+                selectedShutters.size === sortedShutters.length
+                  ? styles.selectAllButtonTextActive
+                  : styles.selectAllButtonTextInactive
+              ]}>
+                {selectedShutters.size === sortedShutters.length ? 'Tout désélectionner' : 'Tout sélectionner'}
+              </Text>
             </TouchableOpacity>
             <View style={styles.selectionActionsRow}>
               <TouchableOpacity 
@@ -1375,7 +1375,12 @@ const createStyles = (theme: any) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 8,
+  },
   invalidReferenceText: {
+    fontSize: 12,
+    fontFamily: 'Inter-Regular',
+    color: theme.colors.textTertiary,
+  },
   remarksEditingInput: {
     borderWidth: 1,
     borderColor: theme.mode === 'dark' 
