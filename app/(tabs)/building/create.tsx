@@ -20,12 +20,7 @@ export default function CreateBuildingScreen() {
   const { theme } = useTheme();
 
   const handleBack = () => {
-    if (projectId) {
-      // CORRIGÉ : Retourner vers le projet (liste des bâtiments)
-      router.push(`/(tabs)/project/${projectId}`);
-    } else {
-      router.push('/(tabs)/');
-    }
+    router.back();
   };
 
   const validateForm = () => {

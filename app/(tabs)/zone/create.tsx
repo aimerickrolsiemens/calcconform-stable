@@ -19,12 +19,7 @@ export default function CreateZoneScreen() {
   const [errors, setErrors] = useState<{ name?: string }>({});
 
   const handleBack = () => {
-    if (buildingId) {
-      // CORRIGÉ : Retourner vers le bâtiment (liste des zones)
-      router.push(`/(tabs)/building/${buildingId}`);
-    } else {
-      router.push('/(tabs)/');
-    }
+    router.back();
   };
 
   const validateForm = () => {

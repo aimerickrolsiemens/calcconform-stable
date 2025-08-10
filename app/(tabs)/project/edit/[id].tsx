@@ -9,7 +9,6 @@ import { Project } from '@/types';
 import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNavigation } from '@/contexts/NavigationContext';
 
 export default function EditProjectScreen() {
   const { strings } = useLanguage();
@@ -60,7 +59,7 @@ export default function EditProjectScreen() {
 
   // CORRIGÉ : Retourner vers la page du projet (et non la liste des projets)
   const handleBack = () => {
-    return navigation.goBack();
+    router.back();
   };
 
   const validateForm = () => {

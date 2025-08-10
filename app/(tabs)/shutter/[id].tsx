@@ -11,7 +11,6 @@ import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useModal } from '@/contexts/ModalContext';
-import { useNavigation } from '@/contexts/NavigationContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
 export default function ShutterDetailScreen() {
@@ -91,7 +90,7 @@ export default function ShutterDetailScreen() {
   }, [shutter]);
 
   const handleBack = () => {
-    return navigation.goBack();
+    router.back();
   };
 
   const handleEdit = () => {

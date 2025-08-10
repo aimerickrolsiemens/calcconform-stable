@@ -49,7 +49,7 @@ export default function CreateProjectScreen() {
   const generateUniqueId = () => `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
   const handleBack = () => {
-    router.push('/(tabs)/');
+    router.back();
   };
 
   const validateForm = () => {

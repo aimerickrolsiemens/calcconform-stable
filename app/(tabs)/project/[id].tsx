@@ -73,7 +73,7 @@ export default function ProjectDetailScreen() {
   }, [loadProject]);
 
   const handleBack = () => {
-    return navigation.goBack();
+    router.back();
   };
 
   const resetForm = () => {

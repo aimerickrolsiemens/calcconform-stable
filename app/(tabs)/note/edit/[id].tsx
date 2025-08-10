@@ -11,7 +11,6 @@ import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { compressImageFromFile, validateImageBase64, formatFileSize } from '@/utils/imageCompression';
-import { useNavigation } from '@/contexts/NavigationContext';
 
 export default function EditNoteScreen() {
   const { strings } = useLanguage();

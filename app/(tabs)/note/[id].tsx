@@ -11,7 +11,6 @@ import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useModal } from '@/contexts/ModalContext';
-import { useNavigation } from '@/contexts/NavigationContext';
 import { compressImageFromFile, validateImageBase64, formatFileSize } from '@/utils/imageCompression';
 import { LoadingScreen } from '@/components/LoadingScreen';
 
@@ -59,7 +58,7 @@ export default function NoteDetailScreen() {
   }, [note]);
 
   const handleBack = () => {
-    return navigation.goBack();
+    router.back();
   };
 
   const safeNavigate = (path: string) => {

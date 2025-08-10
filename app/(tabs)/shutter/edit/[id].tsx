@@ -10,7 +10,6 @@ import { useStorage } from '@/contexts/StorageContext';
 import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNavigation } from '@/contexts/NavigationContext';
 
 export default function EditShutterScreen() {
   const { strings, currentLanguage } = useLanguage();
@@ -80,7 +79,7 @@ export default function EditShutterScreen() {
 
   // CORRIGÉ : Retourner vers la page du volet (et non de la zone)
   const handleBack = () => {
-    return navigation.goBack();
+    router.back();
   };
 
   const validateForm = () => {

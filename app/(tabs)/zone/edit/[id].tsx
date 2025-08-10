@@ -8,7 +8,6 @@ import { Project, Building, FunctionalZone } from '@/types';
 import { useStorage } from '@/contexts/StorageContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNavigation } from '@/contexts/NavigationContext';
 
 export default function EditZoneScreen() {
   const { strings } = useLanguage();
@@ -56,7 +55,7 @@ export default function EditZoneScreen() {
 
   // CORRIGÉ : Retourner vers la page de la zone (et non du bâtiment)
   const handleBack = () => {
-    return navigation.goBack();
+    router.back();
   };
 
   const validateForm = () => {

@@ -57,11 +57,7 @@ export default function CreateShutterScreen() {
   }, [type]);
 
   const handleBack = () => {
-    if (zoneId) {
-      router.push(`/(tabs)/zone/${zoneId}`);
-    } else {
-      router.push('/(tabs)/');
-    }
+    router.back();
   };
 
   const validateForm = () => {

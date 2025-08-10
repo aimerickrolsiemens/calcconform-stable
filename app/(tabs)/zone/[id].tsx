@@ -11,7 +11,6 @@ import { useStorage } from '@/contexts/StorageContext';
 import { calculateCompliance, formatDeviation } from '@/utils/compliance';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useNavigation } from '@/contexts/NavigationContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useModal } from '@/contexts/ModalContext';
 
@@ -103,7 +102,7 @@ export default function ZoneDetailScreen() {
   }, [loadZone]);
 
   const handleBack = () => {
-    return navigation.goBack();
+    router.back();
   };
 
   const handleEditZone = () => {

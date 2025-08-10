@@ -8,12 +8,10 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { StorageProvider } from '@/contexts/StorageContext';
 import { ModalProvider } from '@/contexts/ModalContext';
-import { NavigationProvider } from '@/contexts/NavigationContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { AuthenticationScreen } from '@/components/AuthenticationScreen';
 import { InstallPrompt } from '@/components/InstallPrompt';
 import { useInstallPrompt } from '@/hooks/useInstallPrompt';
-import { useDoubleBackToExit } from '@/utils/BackHandler';
 import { Platform, View, Text, StyleSheet } from 'react-native';
 
 // Prévenir l'auto-hide du splash screen de manière sécurisée
@@ -52,10 +50,6 @@ function ErrorScreen({ error }: { error: string }) {
 // Composant wrapper pour gérer l'authentification
 function AuthenticatedApp() {
   const { isAuthenticated, isLoading } = useAuth();
-  
-  // Activer le double-tap pour quitter sur l'écran d'accueil
-  useDoubleBackToExit();
-  
   const { 
     showInstallButton, 
     showIOSInstructions, 
@@ -227,15 +221,13 @@ export default function RootLayout() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <NavigationProvider>
-          <AuthProvider>
-            <StorageProvider>
-              <ModalProvider>
-                <AuthenticatedApp />
-              </ModalProvider>
-            </StorageProvider>
-          </AuthProvider>
-        </NavigationProvider>
+        <AuthProvider>
+          <StorageProvider>
+            <ModalProvider>
+              <AuthenticatedApp />
+            </ModalProvider>
+          </StorageProvider>
+        </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

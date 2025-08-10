@@ -37,21 +37,7 @@ export default function SettingsScreen() {
   };
 
   const handleBack = () => {
-    try {
-      if (router.canDismiss()) {
-        router.dismiss();
-        return;
-      }
-      
-      router.navigate('/(tabs)/');
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      try {
-        router.push('/(tabs)/');
-      } catch (fallbackError) {
-        console.error('Erreur de navigation fallback:', fallbackError);
-      }
-    }
+    router.back();
   };
 
   const handleLanguageSelect = (languageCode: SupportedLanguage) => {

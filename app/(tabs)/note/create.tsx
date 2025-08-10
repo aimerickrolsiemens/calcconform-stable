@@ -50,7 +50,7 @@ export default function CreateNoteScreen() {
   );
 
   const handleBack = () => {
-    safeNavigate('/(tabs)/notes');
+    router.back();
   };
 
   const safeNavigate = (path: string) => {
