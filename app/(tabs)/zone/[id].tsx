@@ -104,7 +104,7 @@ export default function ZoneDetailScreen() {
   const handleBack = () => {
     try {
       if (building) {
-        router.push(`/(tabs)/building/${building.id}`);
+        router.back();
       } else {
         router.push('/(tabs)/');
       }

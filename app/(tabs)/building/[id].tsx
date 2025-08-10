@@ -79,7 +79,7 @@ export default function BuildingDetailScreen() {
   const handleBack = () => {
     try {
       if (project) {
-        router.push(`/(tabs)/project/${project.id}`);
+        router.back();
       } else {
         router.push('/(tabs)/');
       }

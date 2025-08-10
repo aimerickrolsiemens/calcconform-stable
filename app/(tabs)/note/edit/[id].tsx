@@ -58,10 +58,15 @@ export default function EditNoteScreen() {
   };
 
   const handleBack = () => {
-    if (note) {
-      safeNavigate(`/(tabs)/note/${note.id}`);
-    } else {
-      safeNavigate('/(tabs)/notes');
+    try {
+      router.back();
+    } catch (error) {
+      console.error('Erreur de navigation:', error);
+      if (note) {
+        router.push(`/(tabs)/note/${note.id}`);
+      } else {
+        router.push('/(tabs)/notes');
+      }
     }
   };
 

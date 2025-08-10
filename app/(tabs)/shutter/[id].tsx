@@ -92,9 +92,9 @@ export default function ShutterDetailScreen() {
   const handleBack = () => {
     try {
       if (from === 'search') {
-        router.push('/(tabs)/search');
+        router.back();
       } else if (zone) {
-        router.push(`/(tabs)/zone/${zone.id}`);
+        router.back();
       } else {
         router.push('/(tabs)/');
       }

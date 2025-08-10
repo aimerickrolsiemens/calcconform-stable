@@ -58,7 +58,12 @@ export default function NoteDetailScreen() {
   }, [note]);
 
   const handleBack = () => {
-    safeNavigate('/(tabs)/notes');
+    try {
+      router.back();
+    } catch (error) {
+      console.error('Erreur de navigation:', error);
+      router.push('/(tabs)/notes');
+    }
   };
 
   // Configuration du retour natif avec la même logique que le bouton "<"

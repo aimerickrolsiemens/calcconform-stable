@@ -60,14 +60,14 @@ export default function EditProjectScreen() {
   // CORRIGÉ : Retourner vers la page du projet (et non la liste des projets)
   const handleBack = () => {
     try {
+      router.back();
+    } catch (error) {
+      console.error('Erreur de navigation:', error);
       if (project) {
         router.push(`/(tabs)/project/${project.id}`);
       } else {
         router.push('/(tabs)/');
       }
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      router.push('/(tabs)/');
     }
   };
 

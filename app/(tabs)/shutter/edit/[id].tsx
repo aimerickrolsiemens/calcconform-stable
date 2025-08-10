@@ -80,6 +80,9 @@ export default function EditShutterScreen() {
   // CORRIGÉ : Retourner vers la page du volet (et non de la zone)
   const handleBack = () => {
     try {
+      router.back();
+    } catch (error) {
+      console.error('Erreur de navigation:', error);
       if (shutter) {
         if (from === 'search') {
           router.push(`/(tabs)/shutter/${shutter.id}?from=search`);
@@ -93,9 +96,6 @@ export default function EditShutterScreen() {
       } else {
         router.push('/(tabs)/');
       }
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      router.push('/(tabs)/');
     }
   };
 

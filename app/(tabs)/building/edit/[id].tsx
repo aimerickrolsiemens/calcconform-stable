@@ -52,6 +52,9 @@ export default function EditBuildingScreen() {
   // CORRIGÉ : Retourner vers la page du bâtiment (et non du projet)
   const handleBack = () => {
     try {
+      router.back();
+    } catch (error) {
+      console.error('Erreur de navigation:', error);
       if (building) {
         router.push(`/(tabs)/building/${building.id}`);
       } else if (project) {
@@ -59,9 +62,6 @@ export default function EditBuildingScreen() {
       } else {
         router.push('/(tabs)/');
       }
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      router.push('/(tabs)/');
     }
   };
 

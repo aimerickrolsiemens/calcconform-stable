@@ -76,7 +76,7 @@ export default function ProjectDetailScreen() {
   const handleBack = () => {
     try {
       // CORRIGÉ : Retourner vers la liste des projets
-      router.push('/(tabs)/');
+      router.back();
     } catch (error) {
       console.error('Erreur de navigation:', error);
       // Fallback vers l'accueil

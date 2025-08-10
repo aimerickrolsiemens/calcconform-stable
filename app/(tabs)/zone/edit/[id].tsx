@@ -56,6 +56,9 @@ export default function EditZoneScreen() {
   // CORRIGÉ : Retourner vers la page de la zone (et non du bâtiment)
   const handleBack = () => {
     try {
+      router.back();
+    } catch (error) {
+      console.error('Erreur de navigation:', error);
       if (zone) {
         router.push(`/(tabs)/zone/${zone.id}`);
       } else if (building) {
@@ -63,9 +66,6 @@ export default function EditZoneScreen() {
       } else {
         router.push('/(tabs)/');
       }
-    } catch (error) {
-      console.error('Erreur de navigation:', error);
-      router.push('/(tabs)/');
     }
   };
 
