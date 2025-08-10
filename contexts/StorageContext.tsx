@@ -919,28 +919,67 @@ export function StorageProvider({ children }: StorageProviderProps) {
       contentLength: noteData.content?.length || 0
     });
     
-    // CORRECTION MAJEURE : Préserver TOUTES les images sans filtrage excessif
+    // CORRECTION MAJEURE : Gestion robuste des images avec validation et chunking
     let finalImages: string[] | undefined = undefined;
+    
     if (noteData.images && Array.isArray(noteData.images) && noteData.images.length > 0) {
-      // Validation minimale : seulement vérifier que c'est une chaîne non vide qui commence par data:image/
-      finalImages = noteData.images.filter(img => {
-        const isValid = img && 
-          typeof img === 'string' && 
-          img.trim() !== '' && 
-          img.startsWith('data:image/');
+      console.log('📸 Traitement de', noteData.images.length, 'images pour création...');
+      
+      // Validation et nettoyage des images
+      const validatedImages: string[] = [];
+      
+      for (let i = 0; i < noteData.images.length; i++) {
+        const img = noteData.images[i];
         
-        if (!isValid) {
-          console.warn('⚠️ Image invalide filtrée lors de la création:', img?.substring(0, 30));
+        try {
+          // Validation robuste de chaque image
+          if (!img || typeof img !== 'string' || img.trim() === '') {
+            console.warn(`⚠️ Image ${i + 1} vide ou invalide, ignorée`);
+            continue;
+          }
+          
+          if (!img.startsWith('data:image/')) {
+            console.warn(`⚠️ Image ${i + 1} format invalide, ignorée`);
+            continue;
+          }
+          
+          // Vérifier que l'image a des données base64 valides
+          const commaIndex = img.indexOf(',');
+          if (commaIndex === -1) {
+            console.warn(`⚠️ Image ${i + 1} pas de données base64, ignorée`);
+            continue;
+          }
+          
+          const base64Data = img.substring(commaIndex + 1);
+          if (base64Data.length < 100) {
+            console.warn(`⚠️ Image ${i + 1} données base64 trop courtes, ignorée`);
+            continue;
+          }
+          
+          // Vérifier la taille de l'image individuelle
+          const imageSizeBytes = Math.round((base64Data.length * 3) / 4);
+          const imageSizeMB = imageSizeBytes / 1024 / 1024;
+          
+          if (imageSizeMB > 10) { // 10MB max par image
+            console.warn(`⚠️ Image ${i + 1} trop volumineuse (${imageSizeMB.toFixed(2)}MB), ignorée`);
+            continue;
+          }
+          
+          validatedImages.push(img);
+          console.log(`✅ Image ${i + 1} validée (${imageSizeMB.toFixed(2)}MB)`);
+          
+        } catch (error) {
+          console.warn(`⚠️ Erreur validation image ${i + 1}:`, error);
         }
-        return isValid;
-      });
+      }
       
-      console.log(`📸 Images validées pour création: ${finalImages.length}/${noteData.images.length}`);
+      console.log(`📸 Images finalement validées: ${validatedImages.length}/${noteData.images.length}`);
       
-      // CORRECTION : Garder le tableau même s'il est vide pour éviter la perte
-      if (finalImages.length === 0) {
-        console.log('📸 Aucune image valide mais conservation du tableau vide');
-        finalImages = [];
+      if (validatedImages.length > 0) {
+        finalImages = validatedImages;
+      } else {
+        console.log('📸 Aucune image valide, note créée sans images');
+        finalImages = undefined;
       }
     }
     
@@ -959,6 +998,16 @@ export function StorageProvider({ children }: StorageProviderProps) {
       hasImages: !!newNote.images
     });
     
+    // Vérifier la taille totale de la note avant sauvegarde
+    const noteSize = JSON.stringify(newNote).length;
+    const noteSizeMB = (noteSize / 1024 / 1024).toFixed(2);
+    console.log(`📊 Taille totale de la note: ${noteSizeMB} MB`);
+    
+    if (noteSize > 50 * 1024 * 1024) { // 50MB max par note
+      console.error('❌ Note trop volumineuse pour le stockage:', noteSizeMB, 'MB');
+      throw new Error(`Note trop volumineuse (${noteSizeMB}MB). Réduisez le nombre d'images.`);
+    }
+    
     const newNotes = [newNote, ...notes];
     
     try {
@@ -967,7 +1016,23 @@ export function StorageProvider({ children }: StorageProviderProps) {
       return newNote;
     } catch (saveError) {
       console.error('❌ StorageContext.createNote - Erreur sauvegarde:', saveError);
-      throw saveError;
+      
+      // Si l'erreur est liée au stockage, essayer de sauvegarder sans les images
+      if (finalImages && finalImages.length > 0) {
+        console.log('🔄 Tentative de sauvegarde sans images...');
+        try {
+          const noteWithoutImages = { ...newNote, images: undefined };
+          const notesWithoutImages = [noteWithoutImages, ...notes];
+          await saveNotes(notesWithoutImages);
+          console.log('✅ Note sauvegardée sans images comme fallback');
+          return noteWithoutImages;
+        } catch (fallbackError) {
+          console.error('❌ Erreur sauvegarde fallback:', fallbackError);
+          throw new Error('Impossible de sauvegarder la note. Stockage plein ou corrompu.');
+        }
+      } else {
+        throw new Error('Erreur de sauvegarde. Veuillez réessayer.');
+      }
     }
   };
 
@@ -1061,10 +1126,77 @@ export function StorageProvider({ children }: StorageProviderProps) {
       const dataSizeKB = (dataString.length / 1024).toFixed(2);
       console.log('📊 StorageContext.saveNotes - Taille des données:', dataSizeKB, 'KB');
       
-      // Sauvegarder avec gestion d'erreur robuste
-      await AsyncStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(newNotes));
+      // CORRECTION MAJEURE : Gestion du chunking pour les gros volumes de données
+      const maxChunkSize = 1024 * 1024; // 1MB par chunk
+      
+      if (dataString.length > maxChunkSize) {
+        console.log('📦 Données volumineuses, utilisation du chunking...');
+        
+        // Diviser en chunks
+        const chunks: string[] = [];
+        for (let i = 0; i < dataString.length; i += maxChunkSize) {
+          chunks.push(dataString.substring(i, i + maxChunkSize));
+        }
+        
+        console.log(`📦 Division en ${chunks.length} chunks`);
+        
+        // Sauvegarder les métadonnées des chunks
+        const chunksMetadata = {
+          totalChunks: chunks.length,
+          totalSize: dataString.length,
+          timestamp: Date.now()
+        };
+        
+        try {
+          // Sauvegarder chaque chunk
+          for (let i = 0; i < chunks.length; i++) {
+            await AsyncStorage.setItem(`${STORAGE_KEYS.NOTES}_chunk_${i}`, JSON.stringify([chunks[i]]));
+            console.log(`✅ Chunk ${i + 1}/${chunks.length} sauvegardé`);
+          }
+          
+          // Sauvegarder les métadonnées
+          await AsyncStorage.setItem(`${STORAGE_KEYS.NOTES}_chunks_meta`, JSON.stringify(chunksMetadata));
+          
+          // Supprimer l'ancien stockage monolithique s'il existe
+          try {
+            await AsyncStorage.removeItem(STORAGE_KEYS.NOTES);
+          } catch (error) {
+            // Ignorer l'erreur si la clé n'existe pas
+          }
+          
+          console.log('✅ Sauvegarde par chunks réussie');
+        } catch (chunkError) {
+          console.error('❌ Erreur sauvegarde chunks:', chunkError);
+          throw new Error('Données trop volumineuses pour le stockage disponible');
+        }
+      } else {
+        // Sauvegarde normale pour les petites données
+        try {
+          await AsyncStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(newNotes));
+          console.log('✅ StorageContext.saveNotes - Sauvegarde AsyncStorage normale réussie');
+          
+          // Nettoyer les anciens chunks s'ils existent
+          try {
+            const chunksMetaData = await AsyncStorage.getItem(`${STORAGE_KEYS.NOTES}_chunks_meta`);
+            if (chunksMetaData) {
+              const meta = JSON.parse(chunksMetaData);
+              for (let i = 0; i < meta.totalChunks; i++) {
+                await AsyncStorage.removeItem(`${STORAGE_KEYS.NOTES}_chunk_${i}`);
+              }
+              await AsyncStorage.removeItem(`${STORAGE_KEYS.NOTES}_chunks_meta`);
+              console.log('🧹 Anciens chunks nettoyés');
+            }
+          } catch (cleanupError) {
+            // Ignorer les erreurs de nettoyage
+          }
+        } catch (normalSaveError) {
+          console.error('❌ Erreur sauvegarde normale:', normalSaveError);
+          throw new Error('Erreur de sauvegarde. Stockage peut-être plein.');
+        }
+      }
+      
+      // Mettre à jour l'état React seulement après une sauvegarde réussie
       setNotes(newNotes);
-      console.log('✅ StorageContext.saveNotes - Sauvegarde AsyncStorage réussie');
       
       // Cache dans le Service Worker pour l'accès hors ligne
       if (Platform.OS === 'web' && 'serviceWorker' in navigator) {

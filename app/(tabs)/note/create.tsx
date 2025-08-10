@@ -75,12 +75,22 @@ export default function CreateNoteScreen() {
   };
 
   const validateForm = () => {
-    // CORRECTION: Validation minimale pour éviter les erreurs
+    // CORRECTION: Validation améliorée pour éviter les créations vides
     const newErrors: { content?: string } = {};
     
-    // Vérifier que le contenu n'est pas vide si aucune image
-    if (!content.trim() && images.length === 0) {
+    // Vérifier qu'il y a au moins du contenu OU des images valides
+    const hasContent = content.trim().length > 0;
+    const hasValidImages = images.length > 0 && images.some(img => 
+      img && typeof img === 'string' && img.startsWith('data:image/')
+    );
+    
+    if (!hasContent && !hasValidImages) {
       newErrors.content = 'Veuillez ajouter du contenu ou des images à votre note';
+    }
+    
+    // Vérifier la limite d'images pour éviter les problèmes de performance
+    if (images.length > 20) {
+      newErrors.content = 'Limite de 20 images par note dépassée';
     }
     
     setErrors(newErrors);
@@ -109,23 +119,132 @@ export default function CreateNoteScreen() {
         finalTitle = `Note sans titre ${nextNumber}`;
       }
       
-      // CORRECTION: Validation plus robuste des images pour la création
-      const validImages = images.filter(img => validateImageBase64(img));
+      // CORRECTION MAJEURE: Validation et préparation des images pour éviter les échecs de création
+      console.log('📸 Validation des images avant création...');
+      const validImages: string[] = [];
+      
+      for (let i = 0; i < images.length; i++) {
+        const img = images[i];
+        if (img && typeof img === 'string' && img.trim() !== '' && img.startsWith('data:image/')) {
+          try {
+            // Vérifier que l'image n'est pas corrompue en tentant de la parser
+            const base64Data = img.split(',')[1];
+            if (base64Data && base64Data.length > 100) {
+              validImages.push(img);
+              console.log(`✅ Image ${i + 1} validée pour création`);
+            } else {
+              console.warn(`⚠️ Image ${i + 1} trop petite ou corrompue, ignorée`);
+            }
+          } catch (error) {
+            console.warn(`⚠️ Image ${i + 1} corrompue, ignorée:`, error);
+          }
+        } else {
+          console.warn(`⚠️ Image ${i + 1} invalide, ignorée`);
+        }
+      }
       
       console.log(`📸 Images validées pour création: ${validImages.length}/${images.length}`);
       
+      // Préparer les données de la note avec gestion d'erreur robuste
       const noteData = {
         title: finalTitle,
         description: description.trim() || undefined,
-        location: location.trim() || undefined,
-        tags: tags.trim() || undefined,
-        content: content.trim(),
-        images: validImages, // CORRECTION : Toujours passer le tableau, même vide
-      };
+      console.log('📋 Données finales de la note à créer:', {
+        title: noteData.title,
+        hasDescription: !!noteData.description,
+        hasLocation: !!noteData.location,
+        hasTags: !!noteData.tags,
+        contentLength: noteData.content.length,
+        finalImagesCount: noteData.images?.length || 0,
+        hasImages: !!noteData.images
+      });
       
-      console.log('📋 Données de la note à créer:', {
-        ...noteData,
-        images: `${noteData.images?.length || 0} images`
+      // Vérifier la taille totale des données avant création
+      const dataSize = JSON.stringify(noteData).length;
+      const dataSizeMB = (dataSize / 1024 / 1024).toFixed(2);
+      console.log(`📊 Taille totale des données: ${dataSizeMB} MB`);
+      
+      // Limite de sécurité pour éviter les échecs de stockage
+      if (dataSize > 50 * 1024 * 1024) { // 50MB max
+        console.error('❌ Données trop volumineuses pour le stockage:', dataSizeMB, 'MB');
+        Alert.alert(
+          'Note trop volumineuse',
+          `La note (${dataSizeMB}MB) dépasse la limite de stockage. Réduisez le nombre d'images.`,
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+      
+      console.log('💾 Tentative de création de la note...');
+      
+      // Créer la note avec gestion d'erreur améliorée
+      let note;
+      try {
+        note = await createNote(noteData);
+      } catch (createError) {
+        console.error('❌ Erreur spécifique createNote:', createError);
+        
+        // Si l'erreur est liée aux images, essayer sans les images
+        if (validImages.length > 0) {
+          console.log('🔄 Tentative de création sans images...');
+          try {
+            const noteDataWithoutImages = {
+              ...noteData,
+              images: undefined
+            };
+            note = await createNote(noteDataWithoutImages);
+            
+            if (note) {
+              Alert.alert(
+                'Note créée partiellement',
+                'La note a été créée mais les images n\'ont pas pu être sauvegardées. Vous pouvez les ajouter depuis la page d\'édition.',
+                [{ text: 'OK' }]
+              );
+            }
+          } catch (fallbackError) {
+            console.error('❌ Erreur création fallback:', fallbackError);
+            throw createError; // Relancer l'erreur originale
+          }
+        } else {
+          throw createError; // Relancer l'erreur si pas d'images
+        }
+      }
+      
+      if (note) {
+        console.log('✅ Note créée avec succès:', note.id);
+        console.log('✅ Images dans la note créée:', note.images?.length || 0);
+        
+        // Marquer qu'il faut réinitialiser le formulaire au prochain focus
+        setShouldReset(true);
+        
+        // Navigation sécurisée avec délai pour éviter les conflits
+        setTimeout(() => {
+          safeNavigate(`/(tabs)/note/${note.id}`);
+        }, 100);
+      } else {
+        console.error('❌ createNote a retourné null - problème dans StorageContext');
+        Alert.alert('Erreur', 'Impossible de créer la note. Veuillez réessayer.');
+        setShouldReset(true);
+        setTimeout(() => {
+          safeNavigate('/(tabs)/notes');
+        }, 100);
+      }
+    } catch (error) {
+      console.error('❌ Erreur générale lors de la création de la note:', error);
+      console.error('❌ Stack trace:', error.stack);
+      
+      // Message d'erreur plus informatif
+      const errorMessage = error.message || 'Erreur inconnue';
+      Alert.alert(
+        'Erreur de création',
+        `Impossible de créer la note: ${errorMessage}. Essayez avec moins d'images.`,
+        [{ text: 'OK' }]
+      );
+      
+      setShouldReset(true);
+      setTimeout(() => {
+        safeNavigate('/(tabs)/notes');
+      }, 100);
       });
       
       // Créer la note
@@ -229,19 +348,29 @@ export default function CreateNoteScreen() {
       try {
         console.log('📸 Images sélectionnées:', files.length);
         
-        // CORRECTION : Traiter les images une par une avec compression
+        // CORRECTION MAJEURE : Traitement séquentiel avec gestion d'erreur robuste
         const processedImages: string[] = [];
+        const failedImages: string[] = [];
         
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
           
           if (!file || !file.type.startsWith('image/')) {
             console.warn(`⚠️ Fichier ${i} ignoré (pas une image):`, file?.type);
+            failedImages.push(file?.name || `Fichier ${i + 1}`);
             continue;
           }
           
           try {
             console.log(`📸 Traitement image ${i + 1}/${files.length}:`, file.name);
+            
+            // Vérification de la taille avant traitement
+            if (file.size > 20 * 1024 * 1024) { // 20MB max par fichier
+              console.warn(`⚠️ Fichier ${file.name} trop volumineux:`, (file.size / 1024 / 1024).toFixed(2), 'MB');
+              failedImages.push(file.name);
+              continue;
+            }
+            
             const compressedImage = await processImage(file);
             
             if (compressedImage && validateImageBase64(compressedImage)) {
@@ -249,6 +378,7 @@ export default function CreateNoteScreen() {
               console.log(`✅ Image ${i + 1} traitée et validée avec succès`);
             } else {
               console.error(`❌ Image ${i + 1} invalide après traitement`);
+              failedImages.push(file.name);
             }
             
             // Pause pour éviter de bloquer l'UI
@@ -257,6 +387,7 @@ export default function CreateNoteScreen() {
             }
           } catch (error) {
             console.error(`❌ Erreur traitement image ${i + 1}:`, error);
+            failedImages.push(file.name);
           }
         }
         
@@ -265,21 +396,30 @@ export default function CreateNoteScreen() {
           setImages(prev => [...prev, ...processedImages]);
           console.log(`✅ ${processedImages.length}/${files.length} images ajoutées avec succès`);
           
-          if (processedImages.length < files.length) {
+          // Afficher un message informatif si certaines images ont échoué
+          if (failedImages.length > 0) {
             Alert.alert(
-              'Information',
-              `${processedImages.length} image(s) sur ${files.length} ont été ajoutées avec succès.`,
+              'Images partiellement ajoutées',
+              `${processedImages.length} image(s) ajoutée(s) avec succès.\n${failedImages.length} image(s) ignorée(s) (format invalide ou trop volumineuse).`,
               [{ text: 'OK' }]
             );
           }
         } else {
           console.warn('⚠️ Aucune image n\'a pu être traitée');
-          Alert.alert('Erreur', 'Aucune image n\'a pu être traitée. Vérifiez le format des fichiers.');
+          Alert.alert(
+            'Aucune image ajoutée', 
+            'Aucune image n\'a pu être traitée. Vérifiez que les fichiers sont des images valides et pas trop volumineuses.',
+            [{ text: 'OK' }]
+          );
         }
         
       } catch (error) {
         console.error('❌ Erreur générale lors du traitement des images:', error);
-        Alert.alert('Erreur', 'Erreur lors du traitement des images.');
+        Alert.alert(
+          'Erreur de traitement', 
+          'Erreur lors du traitement des images. Essayez avec moins d\'images ou des fichiers plus petits.',
+          [{ text: 'OK' }]
+        );
       }
     }
     
