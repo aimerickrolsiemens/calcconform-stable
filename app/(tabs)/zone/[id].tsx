@@ -777,148 +777,107 @@ export default function ZoneDetailScreen() {
 
       {/* Barre de filtres */}
       {filtersVisible && (
-        <View style={styles.filterBar}>
-          <View style={styles.filterHeader}>
-            <Text style={styles.filterTitle}>🔍 Filtres</Text>
-            {hasActiveFilters && (
-              <TouchableOpacity style={styles.clearFiltersButton} onPress={clearFilters}>
-                <X size={16} color={theme.colors.error} />
-                <Text style={styles.clearFiltersText}>Effacer</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Filtre par type de volet */}
-          <View style={styles.filterSection}>
-            <Text style={styles.filterSectionTitle}>🔲 Type de volet</Text>
-            <View style={styles.filterButtons}>
+        <View style={styles.compactFilterBar}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.compactFilterScroll}>
+            <View style={styles.compactFilterButtons}>
+              {/* Filtres par type de volet */}
               <TouchableOpacity
-                style={[
-                  styles.filterButton,
-                  shutterTypeFilter === 'all' && styles.filterButtonActive
-                ]}
+                style={[styles.compactFilterButton, shutterTypeFilter === 'all' && styles.compactFilterButtonActive]}
                 onPress={() => setShutterTypeFilter('all')}
               >
-                <Text style={[
-                  styles.filterButtonText,
-                  shutterTypeFilter === 'all' && styles.filterButtonTextActive
-                ]}>
+                <Text style={[styles.compactFilterButtonText, shutterTypeFilter === 'all' && styles.compactFilterButtonTextActive]}>
                   Tous ({shutterStats.total})
                 </Text>
               </TouchableOpacity>
-
+              
               <TouchableOpacity
-                style={[
-                  styles.filterButton,
-                  shutterTypeFilter === 'high' && styles.filterButtonActive
-                ]}
+                style={[styles.compactFilterButton, shutterTypeFilter === 'high' && styles.compactFilterButtonActive]}
                 onPress={() => setShutterTypeFilter('high')}
               >
-                <View style={styles.filterButtonContent}>
-                  <View style={[styles.filterButtonDot, { backgroundColor: '#10B981' }]} />
-                  <Text style={[
-                    styles.filterButtonText,
-                    shutterTypeFilter === 'high' && styles.filterButtonTextActive
-                  ]}>
+                <View style={styles.compactFilterButtonContent}>
+                  <View style={[styles.compactFilterDot, { backgroundColor: '#10B981' }]} />
+                  <Text style={[styles.compactFilterButtonText, shutterTypeFilter === 'high' && styles.compactFilterButtonTextActive]}>
                     VH ({shutterStats.high})
                   </Text>
                 </View>
               </TouchableOpacity>
-
+              
               <TouchableOpacity
-                style={[
-                  styles.filterButton,
-                  shutterTypeFilter === 'low' && styles.filterButtonActive
-                ]}
+                style={[styles.compactFilterButton, shutterTypeFilter === 'low' && styles.compactFilterButtonActive]}
                 onPress={() => setShutterTypeFilter('low')}
               >
-                <View style={styles.filterButtonContent}>
-                  <View style={[styles.filterButtonDot, { backgroundColor: '#F59E0B' }]} />
-                  <Text style={[
-                    styles.filterButtonText,
-                    shutterTypeFilter === 'low' && styles.filterButtonTextActive
-                  ]}>
+                <View style={styles.compactFilterButtonContent}>
+                  <View style={[styles.compactFilterDot, { backgroundColor: '#F59E0B' }]} />
+                  <Text style={[styles.compactFilterButtonText, shutterTypeFilter === 'low' && styles.compactFilterButtonTextActive]}>
                     VB ({shutterStats.low})
                   </Text>
                 </View>
               </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Filtre par niveau de conformité */}
-          <View style={styles.filterSection}>
-            <Text style={styles.filterSectionTitle}>📊 Niveau de conformité</Text>
-            <View style={styles.filterButtons}>
+              
+              {/* Séparateur visuel */}
+              <View style={styles.filterSeparator} />
+              
+              {/* Filtres par conformité */}
               <TouchableOpacity
-                style={[
-                  styles.filterButton,
-                  complianceFilter === 'all' && styles.filterButtonActive
-                ]}
+                style={[styles.compactFilterButton, complianceFilter === 'all' && styles.compactFilterButtonActive]}
                 onPress={() => setComplianceFilter('all')}
               >
-                <Text style={[
-                  styles.filterButtonText,
-                  complianceFilter === 'all' && styles.filterButtonTextActive
-                ]}>
+                <Text style={[styles.compactFilterButtonText, complianceFilter === 'all' && styles.compactFilterButtonTextActive]}>
                   Tous ({shutterStats.total})
                 </Text>
               </TouchableOpacity>
-
+              
               <TouchableOpacity
-                style={[
-                  styles.filterButton,
-                  complianceFilter === 'compliant' && styles.filterButtonActive
-                ]}
+                style={[styles.compactFilterButton, complianceFilter === 'compliant' && styles.compactFilterButtonActive]}
                 onPress={() => setComplianceFilter('compliant')}
               >
-                <View style={styles.filterButtonContent}>
-                  <View style={[styles.filterButtonDot, { backgroundColor: '#10B981' }]} />
-                  <Text style={[
-                    styles.filterButtonText,
-                    complianceFilter === 'compliant' && styles.filterButtonTextActive
-                  ]}>
-                    ({shutterStats.compliant})
+                <View style={styles.compactFilterButtonContent}>
+                  <View style={[styles.compactFilterDot, { backgroundColor: '#10B981' }]} />
+                  <Text style={[styles.compactFilterButtonText, complianceFilter === 'compliant' && styles.compactFilterButtonTextActive]}>
+                    ✓ ({shutterStats.compliant})
                   </Text>
                 </View>
               </TouchableOpacity>
-
+              
               <TouchableOpacity
-                style={[
-                  styles.filterButton,
-                  complianceFilter === 'acceptable' && styles.filterButtonActive
-                ]}
+                style={[styles.compactFilterButton, complianceFilter === 'acceptable' && styles.compactFilterButtonActive]}
                 onPress={() => setComplianceFilter('acceptable')}
               >
-                <View style={styles.filterButtonContent}>
-                  <View style={[styles.filterButtonDot, { backgroundColor: '#F59E0B' }]} />
-                  <Text style={[
-                    styles.filterButtonText,
-                    complianceFilter === 'acceptable' && styles.filterButtonTextActive
-                  ]}>
-                    ({shutterStats.acceptable})
+                <View style={styles.compactFilterButtonContent}>
+                  <View style={[styles.compactFilterDot, { backgroundColor: '#F59E0B' }]} />
+                  <Text style={[styles.compactFilterButtonText, complianceFilter === 'acceptable' && styles.compactFilterButtonTextActive]}>
+                    ⚠ ({shutterStats.acceptable})
                   </Text>
                 </View>
               </TouchableOpacity>
-
+              
               <TouchableOpacity
-                style={[
-                  styles.filterButton,
-                  complianceFilter === 'non-compliant' && styles.filterButtonActive
-                ]}
+                style={[styles.compactFilterButton, complianceFilter === 'non-compliant' && styles.compactFilterButtonActive]}
                 onPress={() => setComplianceFilter('non-compliant')}
               >
-                <View style={styles.filterButtonContent}>
-                  <View style={[styles.filterButtonDot, { backgroundColor: '#EF4444' }]} />
-                  <Text style={[
-                    styles.filterButtonText,
-                    complianceFilter === 'non-compliant' && styles.filterButtonTextActive
-                  ]}>
-                    ({shutterStats.nonCompliant})
+                <View style={styles.compactFilterButtonContent}>
+                  <View style={[styles.compactFilterDot, { backgroundColor: '#EF4444' }]} />
+                  <Text style={[styles.compactFilterButtonText, complianceFilter === 'non-compliant' && styles.compactFilterButtonTextActive]}>
+                    ✗ ({shutterStats.nonCompliant})
                   </Text>
                 </View>
               </TouchableOpacity>
+              
+              {/* Bouton effacer les filtres */}
+              {hasActiveFilters && (
+                <>
+                  <View style={styles.filterSeparator} />
+                  <TouchableOpacity
+                    style={styles.clearFiltersCompactButton}
+                    onPress={clearFilters}
+                  >
+                    <X size={14} color={theme.colors.error} />
+                    <Text style={styles.clearFiltersCompactText}>Effacer</Text>
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
-          </View>
+          </ScrollView>
         </View>
       )}
 
@@ -1516,81 +1475,73 @@ const createStyles = (theme: any) => StyleSheet.create({
     minHeight: 48,
   },
   
-  // Styles pour les filtres
-  filterBar: {
+  // Nouveaux styles pour la barre de filtres compacte
+  compactFilterBar: {
     backgroundColor: theme.colors.surface,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  filterHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  filterTitle: {
-    fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
-    color: theme.colors.text,
-  },
-  clearFiltersButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    backgroundColor: theme.colors.error + '20',
-  },
-  clearFiltersText: {
-    fontSize: 12,
-    fontFamily: 'Inter-Medium',
-    color: theme.colors.error,
-  },
-  filterSection: {
-    marginBottom: 16,
-  },
-  filterSectionTitle: {
-    fontSize: 14,
-    fontFamily: 'Inter-SemiBold',
-    color: theme.colors.text,
-    marginBottom: 8,
-  },
-  filterButtons: {
-    flexDirection: 'row',
-    gap: 8,
-    flexWrap: 'wrap',
-  },
-  filterButton: {
-    paddingVertical: 8,
     paddingHorizontal: 12,
-    borderRadius: 20,
+    paddingVertical: 8,
+  },
+  compactFilterScroll: {
+    flexGrow: 0,
+  },
+  compactFilterButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 4,
+  },
+  filterSeparator: {
+    width: 1,
+    height: 20,
+    backgroundColor: theme.colors.border,
+    marginHorizontal: 4,
+  },
+  compactFilterButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
     backgroundColor: theme.colors.surfaceSecondary,
     borderWidth: 1,
     borderColor: theme.colors.border,
   },
-  filterButtonActive: {
+  compactFilterButtonActive: {
     backgroundColor: theme.colors.primary,
     borderColor: theme.colors.primary,
   },
-  filterButtonContent: {
+  compactFilterButtonContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
   },
-  filterButtonText: {
-    fontSize: 12,
+  compactFilterButtonText: {
+    fontSize: 11,
     fontFamily: 'Inter-Medium',
     color: theme.colors.textSecondary,
   },
-  filterButtonTextActive: {
-    color: '#FFFFFF',
+  compactFilterButtonTextActive: {
+    color: '#ffffff',
   },
-  filterButtonDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+  compactFilterDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  clearFiltersCompactButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    backgroundColor: theme.colors.error + '20',
+    borderWidth: 1,
+    borderColor: theme.colors.error + '40',
+  },
+  clearFiltersCompactText: {
+    fontSize: 11,
+    fontFamily: 'Inter-Medium',
+    color: theme.colors.error,
   },
 });
