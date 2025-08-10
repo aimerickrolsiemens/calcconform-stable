@@ -121,7 +121,7 @@ export default function EditShutterScreen() {
 
       if (updatedShutter) {
         console.log('✅ Volet mis à jour avec succès');
-        navigation.goBack();
+        router.back();
       } else {
         console.error('❌ Erreur: Volet non trouvé pour la mise à jour');
       }

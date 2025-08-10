@@ -92,7 +92,7 @@ export default function NoteDetailScreen() {
   };
 
   const handleEditNote = () => {
-    navigation.navigate(`/(tabs)/note/edit/${note.id}`, { id: note.id }, 'Modifier la note');
+    router.push(`/(tabs)/note/edit/${note.id}`);
   };
   const handleDelete = () => {
     if (!note) return;

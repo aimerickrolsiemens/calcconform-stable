@@ -84,7 +84,7 @@ export default function EditZoneScreen() {
 
       if (updatedZone) {
         console.log('✅ Zone mise à jour avec succès');
-        navigation.goBack();
+        router.back();
       } else {
         console.error('❌ Erreur: Zone non trouvée pour la mise à jour');
       }

@@ -138,7 +138,7 @@ export default function EditProjectScreen() {
 
       if (updatedProject) {
         console.log('✅ Projet mis à jour avec succès');
-        navigation.goBack();
+        router.back();
       } else {
         console.error('❌ Erreur: Projet non trouvé pour la mise à jour');
       }

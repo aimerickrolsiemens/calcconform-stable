@@ -80,7 +80,7 @@ export default function EditBuildingScreen() {
 
       if (updatedBuilding) {
         console.log('✅ Bâtiment mis à jour avec succès');
-        navigation.goBack();
+        router.back();
       } else {
         console.error('❌ Erreur: Bâtiment non trouvé pour la mise à jour');
       }

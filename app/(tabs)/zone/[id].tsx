@@ -118,7 +118,7 @@ export default function ZoneDetailScreen() {
     if (selectionMode) {
       handleShutterSelection(shutter.id);
     } else {
-      navigation.navigate(`/(tabs)/shutter/${shutter.id}`, { id: shutter.id }, shutter.name);
+      router.push(`/(tabs)/shutter/${shutter.id}`);
     }
   };
 

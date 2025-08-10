@@ -81,7 +81,7 @@ export default function BuildingDetailScreen() {
   };
 
   const handleEditBuilding = () => {
-    navigation.navigate(`/(tabs)/building/edit/${id}`, { id }, 'Modifier le bâtiment');
+    router.push(`/(tabs)/building/edit/${id}`);
   };
 
   const handleCreateZone = () => {

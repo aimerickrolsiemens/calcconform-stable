@@ -96,7 +96,7 @@ export default function ShutterDetailScreen() {
 
   const handleEdit = () => {
     const params = from === 'search' ? { id, from: 'search' } : { id };
-    navigation.navigate(`/(tabs)/shutter/edit/${id}`, params, 'Modifier le volet');
+    router.push(`/(tabs)/shutter/edit/${id}`);
   };
 
   const handleDelete = async () => {

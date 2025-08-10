@@ -59,7 +59,7 @@ export default function EditNoteScreen() {
   };
 
   const handleBack = () => {
-    return navigation.goBack();
+    router.back();
   };
 
   const safeNavigate = (path: string) => {
