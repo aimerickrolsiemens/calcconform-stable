@@ -11,6 +11,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { useModal } from '@/contexts/ModalContext';
+import { useNavigation } from '@/contexts/NavigationContext';
 
 export default function BuildingDetailScreen() {
   const { strings } = useLanguage();
