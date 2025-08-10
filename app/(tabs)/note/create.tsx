@@ -140,6 +140,7 @@ export default function CreateNoteScreen() {
           }
         } else {
           console.warn(`⚠️ Image ${i + 1} invalide, ignorée`);
+        }
         location: location.trim() || undefined,
         tags: tags.trim() || undefined,
         content: content.trim(),
